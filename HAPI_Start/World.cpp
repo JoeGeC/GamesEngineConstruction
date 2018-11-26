@@ -27,6 +27,9 @@ bool World::LoadLevel()
 		return false;
 	if (!m_viz->CreateSprite("bullet", "Data\\bullet.png", true, 1))
 		return false;
+	if (!m_viz->CreateSprite("enemy", "Data\\enemy.png", true, 4))
+		return false;
+
 	
 	BackgroundEntity *background1 = new BackgroundEntity("background");
 	m_entityVector.push_back(background1);
@@ -36,16 +39,24 @@ bool World::LoadLevel()
 	m_entityVector.push_back(background2);
 	background2->SetPosition(Vector2(0, -1000));
 	
-	for (int i = 0; i < 3; i++)
+	PlayerEntity *newPlayer = new PlayerEntity("player");
+	m_entityVector.push_back(newPlayer);
+	newPlayer->SetPosition(Vector2(500, 700));
+
+	for (int i = 0; i < 10; i++)
+	{
+		EnemyEntity *enemy = new EnemyEntity("enemy");
+		m_entityVector.push_back(enemy);
+		enemy->SetPosition(Vector2(i * 40, 50));
+	}
+
+	// bullet collection
+	for (int i = 0; i < 20; i++)
 	{
 		BulletEntity *bullet = new BulletEntity("bullet");
 		bullet->SetAlive(false);
 		m_entityVector.push_back(bullet);
 	}
-
-	PlayerEntity *newPlayer = new PlayerEntity("player");
-	m_entityVector.push_back(newPlayer);
-	newPlayer->SetPosition(Vector2(50, 50));
 	
 	return true;
 }
@@ -107,7 +118,7 @@ void World::FireBullet()
 					if (p->GetSpriteName() == "player")
 						playerPos = p->GetPosition();
 				p->SetAlive(true);
-				p->SetPosition(Vector2(playerPos.x, playerPos.y - 30));
+				p->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
 				return;
 			}
 		}

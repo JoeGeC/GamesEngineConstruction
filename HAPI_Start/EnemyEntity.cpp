@@ -12,5 +12,5 @@ EnemyEntity::~EnemyEntity()
 
 void EnemyEntity::Update()
 {
-	
+	m_position.y++;
 }
