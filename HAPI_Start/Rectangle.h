@@ -15,5 +15,6 @@ public:
 
 	void ClipTo(const Rectangle &other);
 	void Translate(int dx, int dy);
+	void ShrinkRect();
 };
 

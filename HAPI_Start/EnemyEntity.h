@@ -8,5 +8,10 @@ public:
 
 	void Update() override final;
 	ESide GetSide() const override final { return ESide::eEnemy; };
+	int GetDamage() const override final { return 20; };
+	void Collision(int damage, string collider);
+
+private:
+	int m_health{ 100 };
 };
 

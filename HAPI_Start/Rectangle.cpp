@@ -25,3 +25,11 @@ void Rectangle::Translate(int dx, int dy)
 	m_top += dy;
 	m_bottom += dy;
 }
+
+void Rectangle::ShrinkRect()
+{
+	m_left += m_right / 10;
+	m_right -= m_right / 10;
+	m_top += m_bottom / 10;
+	m_bottom -= m_bottom / 10;
+}

@@ -47,7 +47,7 @@ bool World::LoadLevel()
 	{
 		EnemyEntity *enemy = new EnemyEntity("enemy");
 		m_entityVector.push_back(enemy);
-		enemy->SetPosition(Vector2(i * 40, 50));
+		enemy->SetPosition(Vector2(i * 40.f, 50.f));
 	}
 
 	// bullet collection
@@ -83,6 +83,38 @@ void World::Update()
 		{
 			if(p->IsAlive())
 				p->Render(*m_viz);
+		}
+
+		//collisions
+		for (auto p : m_entityVector)
+		{
+			if (p->IsAlive() && p->GetSide() != ESide::eNeutral)
+			{
+				for (auto i : m_entityVector)
+				{
+					if (i->IsAlive() && i->GetSide() != ESide::eNeutral && p->GetSide() != i->GetSide())
+					{
+						Rectangle pRect = p->GetRect();
+						Rectangle iRect = i->GetRect();
+						pRect.ShrinkRect();
+						iRect.ShrinkRect();
+						pRect.Translate((int)p->GetPosition().x, (int)p->GetPosition().y);
+						iRect.Translate((int)i->GetPosition().x, (int)i->GetPosition().y);
+
+						if ((pRect.m_right < iRect.m_left || pRect.m_left > iRect.m_right) // p is to one side of i
+							|| (pRect.m_bottom < iRect.m_top ||	pRect.m_top > iRect.m_bottom)) // p is completely above or below i
+						{
+							//No collision
+						}
+						else
+						{
+							//Collision occurred
+							p->Collision(i->GetDamage(), i->GetSpriteName());
+							i->Collision(p->GetDamage(), p->GetSpriteName());
+						}
+					}
+				}
+			}
 		}
 	}
 }

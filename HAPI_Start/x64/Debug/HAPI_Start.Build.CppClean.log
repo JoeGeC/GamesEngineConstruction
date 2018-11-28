@@ -7,19 +7,23 @@ u:\year 2\game engine construction\hapi_start\hapi_start\x64\debug\rectangle.obj
 u:\year 2\game engine construction\hapi_start\hapi_start\x64\debug\main.obj
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\vc141.pdb
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\vc141.idb
-c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\main.obj
-c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\visualisation.obj
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\star.obj
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\sprite.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\visualisation.obj
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\rectangle.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\main.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\world.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\vector2.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\entity.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\backgroundentity.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\playerentity.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\enemyentity.obj
+c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\bulletentity.obj
 u:\year 2\game engine construction\hapi_start\x64\debug\hapi_start.exe
 u:\year 2\game engine construction\hapi_start\x64\debug\hapi_start.ilk
 u:\year 2\game engine construction\hapi_start\x64\debug\hapi_start.pdb
-c:\users\t7051015\source\repos\hapi_start\x64\debug\hapi_start.exe
-c:\users\t7051015\source\repos\hapi_start\x64\debug\hapi_start.ilk
-c:\users\t7051015\source\repos\hapi_start\x64\debug\hapi_start.pdb
-c:\users\t7051015\source\hapi_start\x64\debug\hapi_start.ilk
 c:\users\t7051015\source\hapi_start\x64\debug\hapi_start.exe
+c:\users\t7051015\source\hapi_start\x64\debug\hapi_start.ilk
 c:\users\t7051015\source\hapi_start\x64\debug\hapi_start.pdb
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\visualistion.obj
 c:\users\t7051015\source\hapi_start\hapi_start\x64\debug\visualisation.obj.enc

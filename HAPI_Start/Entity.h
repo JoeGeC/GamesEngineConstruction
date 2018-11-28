@@ -3,6 +3,7 @@
 #include "Vector2.h"
 #include <string>
 #include "HAPI_lib.h"
+#include "Rectangle.h"
 
 using namespace HAPISPACE;
 
@@ -20,23 +21,30 @@ class Entity
 protected:
 	Vector2 m_position;
 	std::string m_spriteName;
+	Rectangle m_entityRect;
 	bool m_alive{ true };
-	float speed{ 1.0f };
-	float dSpeed = sqrt((speed * speed) * 2.0f) / 2.0f;
+	float m_speed{ 1.0f };
+	float m_dSpeed = sqrt((m_speed * m_speed) * 2.0f) / 2.0f;
 
 public:
 	Entity(std::string spriteName);
 	virtual ~Entity();
 	virtual void Update() = 0;
 	virtual ESide GetSide() const = 0;
+	virtual int GetDamage() const { return 0; };
+	virtual void Collision(int damage, string collider) {};
 
 	void Render(Visualisation &viz);
 
-	void SetPosition(Vector2 newPos) { m_position = newPos; }
+	void SetPosition(Vector2 newPos) { m_position.x = newPos.x; m_position.y = newPos.y; }
 	void SetAlive(bool isAlive) { m_alive = isAlive; }
+	/*void TakeDamage(int damage) { m_health -= damage; }
+	void RestoreHealth(int health) { m_health += health; }*/
 
 	std::string GetSpriteName() const { return m_spriteName; };
 	bool IsAlive() const { return m_alive; };
 	Vector2 GetPosition() const { return m_position; };
+	Rectangle GetRect() const { return m_entityRect; };
+	//int GetDamage() const { return m_damage; };
 };
 
