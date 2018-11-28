@@ -4,6 +4,7 @@
 class Visualisation;
 class Entity;
 class BulletEntity;
+class Sound;
 
 class World
 {
@@ -22,6 +23,7 @@ public:
 
 	void Run();
 	void FireBullet();
+	void Collision();
 
 };
 
