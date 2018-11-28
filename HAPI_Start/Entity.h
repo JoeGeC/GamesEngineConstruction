@@ -45,6 +45,5 @@ public:
 	bool IsAlive() const { return m_alive; };
 	Vector2 GetPosition() const { return m_position; };
 	Rectangle GetRect() const { return m_entityRect; };
-	//int GetDamage() const { return m_damage; };
 };
 

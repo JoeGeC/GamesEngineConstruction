@@ -8,7 +8,6 @@ PlayerEntity::PlayerEntity(std::string spriteName) : Entity(spriteName)
 {
 }
 
-
 PlayerEntity::~PlayerEntity()
 {
 }

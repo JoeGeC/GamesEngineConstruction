@@ -13,5 +13,6 @@ public:
 
 private:
 	int m_health{ 100 };
+
 };
 
