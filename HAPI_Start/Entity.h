@@ -33,6 +33,7 @@ public:
 	virtual ESide GetSide() const = 0;
 	virtual int GetDamage() const { return 0; };
 	virtual void Collision(int damage, string collider) {};
+	void MoveToDest(Vector2 dest);
 
 	void Render(Visualisation &viz);
 

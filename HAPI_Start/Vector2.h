@@ -16,13 +16,13 @@ public:
 	float x{ 0 };
 	float y{ 0 };
 	
-	Vector2& operator+=(const Vector2& rhs)
+	void operator+=(const Vector2& rhs)
 	{
 		x += rhs.x;
 		y += rhs.y;
 	}
 
-	Vector2& operator-=(const Vector2& rhs)
+	void operator-=(const Vector2& rhs)
 	{
 		x -= rhs.x;
 		y -= rhs.y;

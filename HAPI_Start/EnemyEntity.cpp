@@ -1,5 +1,5 @@
 #include "EnemyEntity.h"
-
+#include <math.h>
 
 EnemyEntity::EnemyEntity(std::string spriteName) : Entity(spriteName)
 {
@@ -14,8 +14,6 @@ void EnemyEntity::Update()
 {
 	if (m_health <= 0)
 		m_alive = false;
-
-	//m_position.y += m_speed;
 }
 
 void EnemyEntity::Collision(int damage, string collider)
@@ -25,3 +23,4 @@ void EnemyEntity::Collision(int damage, string collider)
 	else
 		m_health -= damage;
 }
+

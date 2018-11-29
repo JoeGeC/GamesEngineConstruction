@@ -73,6 +73,8 @@ void World::Update()
 		for (auto p : m_entityVector)
 		{
 			p->Update();
+			if (p->GetSpriteName() == "enemy")
+				p->MoveToDest(Vector2(500, 500));
 		}
 
 		//clear screen to black
