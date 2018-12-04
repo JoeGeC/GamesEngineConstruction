@@ -51,6 +51,9 @@
     <ClCompile Include="BulletEntity.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="ExplosionEntity.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rectangle.h">
@@ -81,6 +84,9 @@
       <Filter>World</Filter>
     </ClInclude>
     <ClInclude Include="BulletEntity.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosionEntity.h">
       <Filter>World</Filter>
     </ClInclude>
   </ItemGroup>

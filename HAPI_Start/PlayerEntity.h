@@ -7,7 +7,7 @@ public:
 	PlayerEntity(std::string spriteName);
 	~PlayerEntity();
 
-	void Update() override final;
+	void Update(Visualisation &viz) override final;
 	ESide GetSide() const override final { return ESide::ePlayer; };
 	void Collision(int damage, string collider) override final;
 

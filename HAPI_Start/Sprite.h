@@ -16,9 +16,12 @@ public:
 	void Animate();
 	Rectangle CreateRectangle();
 
-	int GetTextureWidth() const { return m_textureWidth; };
+	int GetTextureWidth() const { return m_textureWidth; }
 	int GetTextureHeight() const { return m_textureHeight; }
+	int GetFrameNo() const { return m_frameNo; }
 	bool IsAlpha() const { return m_isAlpha; }
+
+	void SetFrameNo(int frameNo) { m_frameNo = frameNo; }
 
 private:
 	int m_textureWidth;

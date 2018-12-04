@@ -12,7 +12,7 @@ PlayerEntity::~PlayerEntity()
 {
 }
 
-void PlayerEntity::Update()
+void PlayerEntity::Update(Visualisation &viz)
 {
 	if (m_health <= 0)
 		m_alive = false;

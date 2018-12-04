@@ -8,7 +8,7 @@ BulletEntity::~BulletEntity()
 {
 }
 
-void BulletEntity::Update()
+void BulletEntity::Update(Visualisation &viz)
 {
 	if (GetSide() == ESide::ePlayer)
 		m_position.y -= m_speed;

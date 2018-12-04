@@ -11,7 +11,7 @@ BackgroundEntity::~BackgroundEntity()
 {
 }
 
-void BackgroundEntity::Update()
+void BackgroundEntity::Update(Visualisation &viz)
 {
 	//move background
 	m_position.y += m_speed;

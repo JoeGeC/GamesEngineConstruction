@@ -10,7 +10,7 @@ EnemyEntity::~EnemyEntity()
 {
 }
 
-void EnemyEntity::Update()
+void EnemyEntity::Update(Visualisation &viz)
 {
 	if (m_health <= 0)
 		m_alive = false;

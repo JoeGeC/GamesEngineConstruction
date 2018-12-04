@@ -4,6 +4,7 @@
 #include "PlayerEntity.h"
 #include "BackgroundEntity.h"
 #include "BulletEntity.h"
+#include "ExplosionEntity.h"
 
 World::World()
 {
@@ -29,7 +30,8 @@ bool World::LoadLevel()
 		return false;
 	if (!m_viz->CreateSprite("enemy", "Data\\enemy.png", true, 4))
 		return false;
-
+	if (!m_viz->CreateSprite("explosion", "Data\\Explosion.png", true, 12))
+		return false;
 	
 	BackgroundEntity *background1 = new BackgroundEntity("background");
 	m_entityVector.push_back(background1);
@@ -43,6 +45,7 @@ bool World::LoadLevel()
 	m_entityVector.push_back(newPlayer);
 	newPlayer->SetPosition(Vector2(500, 700));
 
+	//enemies
 	for (int i = 0; i < 10; i++)
 	{
 		EnemyEntity *enemy = new EnemyEntity("enemy");
@@ -50,12 +53,21 @@ bool World::LoadLevel()
 		enemy->SetPosition(Vector2(i * 40.f, 50.f));
 	}
 
-	// bullet collection
+	// bullets
 	for (int i = 0; i < 20; i++)
 	{
 		BulletEntity *bullet = new BulletEntity("bullet");
 		bullet->SetAlive(false);
 		m_entityVector.push_back(bullet);
+	}
+
+	//explosions
+	for (int i = 0; i < 20; i++)
+	{
+		ExplosionEntity *explosion = new ExplosionEntity("explosion");
+		explosion->SetAlive(false);
+		m_entityVector.push_back(explosion);
+		m_explosionVector.push_back(explosion);
 	}
 	
 	return true;
@@ -72,7 +84,8 @@ void World::Update()
 		//update what entities are doing
 		for (auto p : m_entityVector)
 		{
-			p->Update();
+			if(p->IsAlive())
+				p->Update(*m_viz);
 			if (p->GetSpriteName() == "enemy")
 				p->MoveToDest(Vector2(500, 500));
 		}
@@ -113,6 +126,7 @@ void World::Update()
 							//Collision occurred
 							p->Collision(i->GetDamage(), i->GetSpriteName());
 							i->Collision(p->GetDamage(), p->GetSpriteName());
+							Explosion(p->GetPosition());
 						}
 					}
 				}
@@ -155,6 +169,19 @@ void World::FireBullet()
 				p->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
 				return;
 			}
+		}
+	}
+}
+
+void World::Explosion(Vector2 pos)
+{
+	for (auto e : m_explosionVector)
+	{
+		if (!e->IsAlive())
+		{
+			e->SetAlive(true);
+			e->SetPosition(pos);
+			return;
 		}
 	}
 }

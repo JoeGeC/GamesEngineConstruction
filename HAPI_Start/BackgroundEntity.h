@@ -7,7 +7,7 @@ public:
 	BackgroundEntity(std::string spriteName);
 	~BackgroundEntity();
 
-	void Update() override final;
+	void Update(Visualisation &viz) override final;
 	ESide GetSide() const override final { return ESide::eNeutral; };
 };
 

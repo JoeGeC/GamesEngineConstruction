@@ -25,11 +25,12 @@ protected:
 	bool m_alive{ true };
 	float m_speed{ 1.0f };
 	float m_dSpeed = sqrt((m_speed * m_speed) * 2.0f) / 2.0f;
+	int m_frameNo{ 0 };
 
 public:
 	Entity(std::string spriteName);
 	virtual ~Entity();
-	virtual void Update() = 0;
+	virtual void Update(Visualisation &viz) = 0;
 	virtual ESide GetSide() const = 0;
 	virtual int GetDamage() const { return 0; };
 	virtual void Collision(int damage, string collider) {};
