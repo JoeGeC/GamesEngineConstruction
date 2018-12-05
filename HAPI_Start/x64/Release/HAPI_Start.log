@@ -1,3 +1,8 @@
-﻿  World.cpp
-c:\users\t7051015\source\hapi_start\hapi_start\world.cpp(50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  BackgroundEntity.cpp
+  BulletEntity.cpp
+  EnemyEntity.cpp
+  Entity.cpp
+  ExplosionEntity.cpp
+  PlayerEntity.cpp
+  Generating Code...
   HAPI_Start.vcxproj -> C:\Users\t7051015\Source\HAPI_Start\x64\Release\HAPI_Start.exe

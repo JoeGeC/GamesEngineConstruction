@@ -15,7 +15,7 @@ public:
 	void ClearToColour(HAPI_TColour colour);
 	void ClearToGrey(int colour);
 	bool CreateSprite(std::string name, std::string fileName, bool isAlpha, int noOfFrames);
-	void RenderSprite(const std::string& name, int posX, int posY, bool isAlpha);
+	void RenderSprite(const std::string& name, int posX, int posY, bool isAlpha, int frameNo);
 
 	int GetScreenWidth() const;
 	int GetScreenHeight() const;

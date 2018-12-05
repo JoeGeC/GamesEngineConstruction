@@ -4,7 +4,7 @@
 class ExplosionEntity : public Entity
 {
 public:
-	ExplosionEntity(std::string spriteName);
+	ExplosionEntity(std::string spriteName, int noOfFrames);
 	~ExplosionEntity();
 
 	void Update(Visualisation &viz) override final;

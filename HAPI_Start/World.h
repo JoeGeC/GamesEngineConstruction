@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include "Vector2.h"
+#include <HAPI_lib.h>
+
+using namespace HAPISPACE;
 
 class Visualisation;
 class Entity;
@@ -15,10 +18,12 @@ private:
 
 	std::vector<Entity*> m_entityVector;
 	std::vector<ExplosionEntity*> m_explosionVector;
+	std::vector<BulletEntity*> m_bulletVector;
 
 	bool LoadLevel();
 	void Update();
 	int lastPlayerBullet{ 0 };
+	DWORD timeSinceLastUpdate{ 0 };
 
 public:
 	World();

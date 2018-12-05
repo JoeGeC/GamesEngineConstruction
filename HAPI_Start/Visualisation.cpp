@@ -32,7 +32,7 @@ bool Visualisation::CreateSprite(std::string name, std::string fileName, bool is
 	return true;
 }
 
-void Visualisation::RenderSprite(const std::string& name, int posX, int posY, bool isAlpha)
+void Visualisation::RenderSprite(const std::string& name, int posX, int posY, bool isAlpha, int frameNo)
 {
 	if (m_spriteMap.find(name) == m_spriteMap.end())
 	{
@@ -62,9 +62,9 @@ void Visualisation::RenderSprite(const std::string& name, int posX, int posY, bo
 
 	//blit sprite
 	if (m_spriteMap.at(name)->IsAlpha())
-		m_spriteMap.at(name)->BlitAlpha(m_screenPnter, spriteRect, m_screenRect.Width(), posX, posY);
+		m_spriteMap.at(name)->BlitAlpha(m_screenPnter, spriteRect, m_screenRect.Width(), posX, posY, frameNo);
 	else
-		m_spriteMap.at(name)->Blit(m_screenPnter, spriteRect, m_screenRect.Width() , posX, posY);
+		m_spriteMap.at(name)->Blit(m_screenPnter, spriteRect, m_screenRect.Width() , posX, posY, frameNo);
 }
 
 void Visualisation::ClearToGrey(int colour)

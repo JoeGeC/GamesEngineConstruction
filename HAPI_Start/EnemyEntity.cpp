@@ -1,7 +1,7 @@
 #include "EnemyEntity.h"
 #include <math.h>
 
-EnemyEntity::EnemyEntity(std::string spriteName) : Entity(spriteName)
+EnemyEntity::EnemyEntity(std::string spriteName, int noOfFrames) : Entity(spriteName, noOfFrames)
 {
 }
 

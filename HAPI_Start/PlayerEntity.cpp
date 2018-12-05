@@ -4,7 +4,7 @@
 
 using namespace HAPISPACE;
 
-PlayerEntity::PlayerEntity(std::string spriteName) : Entity(spriteName)
+PlayerEntity::PlayerEntity(std::string spriteName, int noOfFrames) : Entity(spriteName, noOfFrames)
 {
 }
 

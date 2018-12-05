@@ -1,11 +1,8 @@
 #include "BackgroundEntity.h"
 
-
-
-BackgroundEntity::BackgroundEntity(std::string spriteName) : Entity(spriteName)
+BackgroundEntity::BackgroundEntity(std::string spriteName, int noOfFrames) : Entity(spriteName, noOfFrames)
 {
 }
-
 
 BackgroundEntity::~BackgroundEntity()
 {

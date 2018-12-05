@@ -4,7 +4,7 @@
 class PlayerEntity : public Entity
 {
 public:
-	PlayerEntity(std::string spriteName);
+	PlayerEntity(std::string spriteName, int noOfFrames);
 	~PlayerEntity();
 
 	void Update(Visualisation &viz) override final;

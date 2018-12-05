@@ -22,33 +22,33 @@ World::~World()
 bool World::LoadLevel()
 {
 	//load all the sprites
-	if(!m_viz->CreateSprite("player", "Data\\spaceship.png", true, 3))
+	if(!m_viz->CreateSprite("player", "Data\\sprites\\spaceship.png", true, 3))
 		return false;
-	if (!m_viz->CreateSprite("background", "Data\\spaceBackground.png", false, 1))
+	if (!m_viz->CreateSprite("background", "Data\\sprites\\spaceBackground.png", false, 1))
 		return false;
-	if (!m_viz->CreateSprite("bullet", "Data\\bullet.png", true, 1))
+	if (!m_viz->CreateSprite("bullet", "Data\\sprites\\bullet.png", true, 1))
 		return false;
-	if (!m_viz->CreateSprite("enemy", "Data\\enemy.png", true, 4))
+	if (!m_viz->CreateSprite("enemy", "Data\\sprites\\enemy.png", true, 4))
 		return false;
-	if (!m_viz->CreateSprite("explosion", "Data\\Explosion.png", true, 12))
+	if (!m_viz->CreateSprite("explosion", "Data\\sprites\\Explosion.png", true, 12))
 		return false;
 	
-	BackgroundEntity *background1 = new BackgroundEntity("background");
+	BackgroundEntity *background1 = new BackgroundEntity("background", 1);
 	m_entityVector.push_back(background1);
 	background1->SetPosition(Vector2(0, 0));
 
-	BackgroundEntity *background2 = new BackgroundEntity("background");
+	BackgroundEntity *background2 = new BackgroundEntity("background", 1);
 	m_entityVector.push_back(background2);
 	background2->SetPosition(Vector2(0, -1000));
 	
-	PlayerEntity *newPlayer = new PlayerEntity("player");
+	PlayerEntity *newPlayer = new PlayerEntity("player", 3);
 	m_entityVector.push_back(newPlayer);
 	newPlayer->SetPosition(Vector2(500, 700));
 
 	//enemies
 	for (int i = 0; i < 10; i++)
 	{
-		EnemyEntity *enemy = new EnemyEntity("enemy");
+		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
 		m_entityVector.push_back(enemy);
 		enemy->SetPosition(Vector2(i * 40.f, 50.f));
 	}
@@ -56,15 +56,16 @@ bool World::LoadLevel()
 	// bullets
 	for (int i = 0; i < 20; i++)
 	{
-		BulletEntity *bullet = new BulletEntity("bullet");
+		BulletEntity *bullet = new BulletEntity("bullet", 1);
 		bullet->SetAlive(false);
 		m_entityVector.push_back(bullet);
+		m_bulletVector.push_back(bullet);
 	}
 
 	//explosions
 	for (int i = 0; i < 20; i++)
 	{
-		ExplosionEntity *explosion = new ExplosionEntity("explosion");
+		ExplosionEntity *explosion = new ExplosionEntity("explosion", 12);
 		explosion->SetAlive(false);
 		m_entityVector.push_back(explosion);
 		m_explosionVector.push_back(explosion);
@@ -77,60 +78,41 @@ void World::Update()
 {
 	while (HAPI.Update())
 	{
-		HAPI.SetShowFPS(true);
-
-		FireBullet();
-
-		//update what entities are doing
-		for (auto p : m_entityVector)
+		DWORD time = HAPI.GetTime();
+		if (time - timeSinceLastUpdate > 3)
 		{
-			if(p->IsAlive())
-				p->Update(*m_viz);
-			if (p->GetSpriteName() == "enemy")
-				p->MoveToDest(Vector2(500, 500));
-		}
+			HAPI.SetShowFPS(true);
 
-		//clear screen to black
-		m_viz->ClearToGrey(0);
+			FireBullet();
 
-		//render sprites
-		for (auto p : m_entityVector)
-		{
-			if(p->IsAlive())
-				p->Render(*m_viz);
-		}
-
-		//collisions
-		for (auto p : m_entityVector)
-		{
-			if (p->IsAlive() && p->GetSide() != ESide::eNeutral)
+			//update what entities are doing
+			for (auto p : m_entityVector)
 			{
-				for (auto i : m_entityVector)
+				if (p->IsAlive())
+					p->Update(*m_viz);
+				if (p->GetSpriteName() == "enemy")
+					p->MoveToDest(Vector2(500, 500));
+				if (p->GetSpriteName() != "bullet" && p->GetSpriteName() != "explosion" && !p->IsAlive() && !p->HasExploded())
 				{
-					if (i->IsAlive() && i->GetSide() != ESide::eNeutral && p->GetSide() != i->GetSide())
-					{
-						Rectangle pRect = p->GetRect();
-						Rectangle iRect = i->GetRect();
-						pRect.ShrinkRect();
-						iRect.ShrinkRect();
-						pRect.Translate((int)p->GetPosition().x, (int)p->GetPosition().y);
-						iRect.Translate((int)i->GetPosition().x, (int)i->GetPosition().y);
-
-						if ((pRect.m_right < iRect.m_left || pRect.m_left > iRect.m_right) // p is to one side of i
-							|| (pRect.m_bottom < iRect.m_top ||	pRect.m_top > iRect.m_bottom)) // p is completely above or below i
-						{
-							//No collision
-						}
-						else
-						{
-							//Collision occurred
-							p->Collision(i->GetDamage(), i->GetSpriteName());
-							i->Collision(p->GetDamage(), p->GetSpriteName());
-							Explosion(p->GetPosition());
-						}
-					}
+					Explosion(p->GetPosition());
+					p->SetExploded(true);
 				}
 			}
+
+			//clear screen to black
+			m_viz->ClearToGrey(0);
+
+			//render sprites
+			for (auto p : m_entityVector)
+			{
+				if (p->IsAlive())
+					p->Render(*m_viz);
+			}
+
+			//collisions
+			Collision();
+
+			timeSinceLastUpdate = time;
 		}
 	}
 }
@@ -157,16 +139,16 @@ void World::FireBullet()
 	if (time - lastPlayerBullet > 300 && keyData.scanCode[HK_SPACE])
 	{
 		lastPlayerBullet = time;
-		for (auto p : m_entityVector)
+		for (auto b : m_bulletVector)
 		{
-			if (p->GetSpriteName() == "bullet" && !p->IsAlive())
+			if (!b->IsAlive())
 			{
 				Vector2 playerPos;
 				for (auto p : m_entityVector)
 					if (p->GetSpriteName() == "player")
 						playerPos = p->GetPosition();
-				p->SetAlive(true);
-				p->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
+				b->SetAlive(true);
+				b->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
 				return;
 			}
 		}
@@ -180,8 +162,43 @@ void World::Explosion(Vector2 pos)
 		if (!e->IsAlive())
 		{
 			e->SetAlive(true);
-			e->SetPosition(pos);
+			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
 			return;
+		}
+	}
+}
+
+void World::Collision()
+{
+	for (auto p : m_entityVector)
+	{
+		if (p->IsAlive() && p->GetSide() != ESide::eNeutral)
+		{
+			for (auto i : m_entityVector)
+			{
+				if (i->IsAlive() && i->GetSide() != ESide::eNeutral && p->GetSide() != i->GetSide())
+				{
+					Rectangle pRect = p->GetRect();
+					Rectangle iRect = i->GetRect();
+					pRect.ShrinkRect();
+					iRect.ShrinkRect();
+					pRect.Translate((int)p->GetPosition().x, (int)p->GetPosition().y);
+					iRect.Translate((int)i->GetPosition().x, (int)i->GetPosition().y);
+
+					if ((pRect.m_right < iRect.m_left || pRect.m_left > iRect.m_right) // p is to one side of i
+						|| (pRect.m_bottom < iRect.m_top || pRect.m_top > iRect.m_bottom)) // p is completely above or below i
+					{
+						//No collision
+					}
+					else
+					{
+						//Collision occurred
+						p->Collision(i->GetDamage(), i->GetSpriteName());
+						i->Collision(p->GetDamage(), p->GetSpriteName());
+						Explosion(i->GetPosition());
+					}
+				}
+			}
 		}
 	}
 }

@@ -32,6 +32,7 @@
     </ClCompile>
     <ClCompile Include="PlayerEntity.cpp" />
     <ClCompile Include="Rectangle.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="World.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="ExplosionEntity.h" />
     <ClInclude Include="PlayerEntity.h" />
     <ClInclude Include="Rectangle.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Visualisation.h" />
     <ClInclude Include="Sprite.h" />

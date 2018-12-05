@@ -19,6 +19,9 @@
     <Filter Include="World">
       <UniqueIdentifier>{3577d339-c8a1-47ac-9a4f-860489364735}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{1e44acb3-fbec-4aea-8d39-36ae75049bac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="ExplosionEntity.cpp">
       <Filter>World</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rectangle.h">
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="ExplosionEntity.h">
       <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

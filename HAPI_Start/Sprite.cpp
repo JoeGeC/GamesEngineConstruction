@@ -21,11 +21,11 @@ bool Sprite::LoadTexture(std::string fileName)
 	return true;
 }
 
-void Sprite::Blit(BYTE *screenPnter, Rectangle &clippedRect, int screenWidth, int posX, int posY)
+void Sprite::Blit(BYTE *screenPnter, Rectangle &clippedRect, int screenWidth, int posX, int posY, int frameNo)
 {
-	Animate();
+	//Animate();
 
-	clippedRect.Translate(m_frameNo * (m_textureWidth / m_noOfFrames), 0);
+	clippedRect.Translate(frameNo * (m_textureWidth / m_noOfFrames), 0);
 	BYTE *texturePnter = m_textureData + (clippedRect.m_left + clippedRect.m_top * m_textureWidth) * 4;
 	screenPnter += (posX + posY * screenWidth) * 4;
 
@@ -39,11 +39,11 @@ void Sprite::Blit(BYTE *screenPnter, Rectangle &clippedRect, int screenWidth, in
 	}
 }
 
-void Sprite::BlitAlpha(BYTE *screenPnter, Rectangle &clippedRect, int screenWidth, int posX, int posY)
+void Sprite::BlitAlpha(BYTE *screenPnter, Rectangle &clippedRect, int screenWidth, int posX, int posY, int frameNo)
 {
-	Animate();
+	//Animate();
 
-	clippedRect.Translate(m_frameNo * (m_textureWidth / m_noOfFrames), 0);
+	clippedRect.Translate(frameNo * (m_textureWidth / m_noOfFrames), 0);
 	BYTE *texturePnter = m_textureData + (clippedRect.m_left + clippedRect.m_top * m_textureWidth) * 4;
 	screenPnter += (posX + posY * screenWidth) * 4;
 
@@ -78,15 +78,15 @@ void Sprite::BlitAlpha(BYTE *screenPnter, Rectangle &clippedRect, int screenWidt
 	}
 }
 
-void Sprite::Animate()
-{
-	//animation time
-	DWORD time = HAPI.GetTime();
-	if (time - lastFrameUpdateTime > 150)
-	{
-		m_frameNo++;
-		lastFrameUpdateTime = time;
-	}
-	if (m_frameNo > m_noOfFrames - 1)
-		m_frameNo = 0;
-}
+//void Sprite::Animate()
+//{
+//	//animation time
+//	DWORD time = HAPI.GetTime();
+//	if (time - lastFrameUpdateTime > 150)
+//	{
+//		m_frameNo++;
+//		lastFrameUpdateTime = time;
+//	}
+//	if (m_frameNo > m_noOfFrames - 1)
+//		m_frameNo = 0;
+//}
