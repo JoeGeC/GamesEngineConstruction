@@ -5,6 +5,7 @@
 #include "BackgroundEntity.h"
 #include "BulletEntity.h"
 #include "ExplosionEntity.h"
+#include "Sound.h"
 
 World::World()
 {
@@ -16,6 +17,9 @@ World::~World()
 	delete m_viz;
 
 	for (auto p : m_entityVector)
+		delete p;
+
+	for (auto p : m_soundVector)
 		delete p;
 }
 
@@ -32,7 +36,7 @@ bool World::LoadLevel()
 		return false;
 	if (!m_viz->CreateSprite("explosion", "Data\\sprites\\Explosion.png", true, 12))
 		return false;
-	
+
 	BackgroundEntity *background1 = new BackgroundEntity("background", 1);
 	m_entityVector.push_back(background1);
 	background1->SetPosition(Vector2(0, 0));
@@ -41,9 +45,9 @@ bool World::LoadLevel()
 	m_entityVector.push_back(background2);
 	background2->SetPosition(Vector2(0, -1000));
 	
-	PlayerEntity *newPlayer = new PlayerEntity("player", 3);
-	m_entityVector.push_back(newPlayer);
-	newPlayer->SetPosition(Vector2(500, 700));
+	PlayerEntity *player = new PlayerEntity("player", 3);
+	m_entityVector.push_back(player);
+	player->SetPosition(Vector2(500, 700));
 
 	//enemies
 	for (int i = 0; i < 10; i++)
@@ -71,6 +75,16 @@ bool World::LoadLevel()
 		m_explosionVector.push_back(explosion);
 	}
 	
+	//load all the sounds
+	Sound *explosionSound = new Sound("explosion", "Data\\sounds\\explosion.flac");
+	explosionSound->LoadSound();
+	m_soundVector.push_back(explosionSound);
+
+	Sound *music = new Sound("explosion", "Data\\sounds\\music.flac");
+	m_soundVector.push_back(music);
+	music->LoadSound();
+	music->PlayStreamed();
+
 	return true;
 }
 
@@ -163,6 +177,11 @@ void World::Explosion(Vector2 pos)
 		{
 			e->SetAlive(true);
 			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
+			for (auto s : m_soundVector)
+			{
+				if (s->GetName() == "explosion")
+					s->PlaySound();
+			}
 			return;
 		}
 	}

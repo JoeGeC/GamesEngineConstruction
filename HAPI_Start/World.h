@@ -19,6 +19,7 @@ private:
 	std::vector<Entity*> m_entityVector;
 	std::vector<ExplosionEntity*> m_explosionVector;
 	std::vector<BulletEntity*> m_bulletVector;
+	std::vector<Sound*> m_soundVector;
 
 	bool LoadLevel();
 	void Update();
