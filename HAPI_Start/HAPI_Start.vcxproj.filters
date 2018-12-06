@@ -22,6 +22,9 @@
     <Filter Include="Sound">
       <UniqueIdentifier>{1e44acb3-fbec-4aea-8d39-36ae75049bac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{0e90d3e8-60a6-483a-a335-d45792933fb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -60,6 +63,12 @@
     <ClCompile Include="Sound.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
+    <ClCompile Include="Wave.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="AI.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Rectangle.h">
@@ -97,6 +106,12 @@
     </ClInclude>
     <ClInclude Include="Sound.h">
       <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Wave.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AI.h">
+      <Filter>AI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

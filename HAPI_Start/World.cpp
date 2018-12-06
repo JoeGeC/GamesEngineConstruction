@@ -6,6 +6,7 @@
 #include "BulletEntity.h"
 #include "ExplosionEntity.h"
 #include "Sound.h"
+#include "AI.h"
 
 World::World()
 {
@@ -49,12 +50,14 @@ bool World::LoadLevel()
 	m_entityVector.push_back(player);
 	player->SetPosition(Vector2(500, 700));
 
+	vector<EnemyEntity*> enemies;
 	//enemies
 	for (int i = 0; i < 10; i++)
 	{
 		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
 		m_entityVector.push_back(enemy);
 		enemy->SetPosition(Vector2(i * 40.f, 50.f));
+		enemies.push_back(enemy);
 	}
 
 	// bullets
@@ -74,7 +77,7 @@ bool World::LoadLevel()
 		m_entityVector.push_back(explosion);
 		m_explosionVector.push_back(explosion);
 	}
-	
+
 	//load all the sounds
 	Sound *explosionSound = new Sound("explosion", "Data\\sounds\\explosion.flac");
 	explosionSound->LoadSound();
@@ -84,6 +87,11 @@ bool World::LoadLevel()
 	m_soundVector.push_back(music);
 	music->LoadSound();
 	music->PlayStreamed();
+
+	//manage waves
+	AI *newAI = new AI();
+	newAI->CreateWave(Vector2(50, 50), enemies, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
+	m_AIVector.push_back(newAI);
 
 	return true;
 }
@@ -96,6 +104,8 @@ void World::Update()
 		if (time - timeSinceLastUpdate > 3)
 		{
 			HAPI.SetShowFPS(true);
+
+			m_AIVector[0]->SpawnEnemy();
 
 			FireBullet();
 

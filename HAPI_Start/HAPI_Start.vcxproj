@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI.cpp" />
     <ClCompile Include="BackgroundEntity.cpp" />
     <ClCompile Include="BulletEntity.cpp" />
     <ClCompile Include="EnemyEntity.cpp" />
@@ -35,9 +36,11 @@
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Visualisation.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Wave.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AI.h" />
     <ClInclude Include="BackgroundEntity.h" />
     <ClInclude Include="BulletEntity.h" />
     <ClInclude Include="EnemyEntity.h" />
@@ -49,6 +52,7 @@
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Visualisation.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Wave.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

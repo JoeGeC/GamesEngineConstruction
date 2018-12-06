@@ -10,6 +10,7 @@ class Entity;
 class BulletEntity;
 class ExplosionEntity;
 class Sound;
+class AI;
 
 class World
 {
@@ -20,6 +21,7 @@ private:
 	std::vector<ExplosionEntity*> m_explosionVector;
 	std::vector<BulletEntity*> m_bulletVector;
 	std::vector<Sound*> m_soundVector;
+	std::vector<AI*> m_AIVector;
 
 	bool LoadLevel();
 	void Update();
