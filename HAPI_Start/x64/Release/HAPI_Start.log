@@ -1,2 +1,6 @@
-﻿  World.cpp
+﻿  AI.cpp
+  EnemyEntity.cpp
+  Wave.cpp
+  World.cpp
+  Generating Code...
   HAPI_Start.vcxproj -> C:\Users\t7051015\Source\HAPI_Start\x64\Release\HAPI_Start.exe

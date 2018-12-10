@@ -50,14 +50,13 @@ bool World::LoadLevel()
 	m_entityVector.push_back(player);
 	player->SetPosition(Vector2(500, 700));
 
-	vector<EnemyEntity*> enemies;
 	//enemies
 	for (int i = 0; i < 10; i++)
 	{
 		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
+		enemy->SetAlive(false);
 		m_entityVector.push_back(enemy);
-		enemy->SetPosition(Vector2(i * 40.f, 50.f));
-		enemies.push_back(enemy);
+		m_enemyVector.push_back(enemy);
 	}
 
 	// bullets
@@ -90,7 +89,7 @@ bool World::LoadLevel()
 
 	//manage waves
 	AI *newAI = new AI();
-	newAI->CreateWave(Vector2(50, 50), enemies, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
+	newAI->CreateWave(Vector2(-50, -50), m_enemyVector, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
 	m_AIVector.push_back(newAI);
 
 	return true;
@@ -114,14 +113,15 @@ void World::Update()
 			{
 				if (p->IsAlive())
 					p->Update(*m_viz);
-				if (p->GetSpriteName() == "enemy")
-					p->MoveToDest(Vector2(500, 500));
 				if (p->GetSpriteName() != "bullet" && p->GetSpriteName() != "explosion" && !p->IsAlive() && !p->HasExploded())
 				{
 					Explosion(p->GetPosition());
 					p->SetExploded(true);
 				}
 			}
+
+			for (auto p : m_AIVector)
+				p->Update();
 
 			//clear screen to black
 			m_viz->ClearToGrey(0);
@@ -189,6 +189,7 @@ void World::Explosion(Vector2 pos)
 			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
 			for (auto s : m_soundVector)
 			{
+				//TODO: Fix explosion sound looping
 				if (s->GetName() == "explosion")
 					s->PlaySound();
 			}

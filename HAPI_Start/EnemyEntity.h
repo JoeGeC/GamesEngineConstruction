@@ -13,11 +13,14 @@ public:
 	int GetDamage() const override final { return 20; };
 	void Collision(int damage, string collider);
 	
-	int GetNextDest() const { return m_nextDest; };
-	void SetNextDest() { m_nextDest++; }
+	int GetNextDestId() const { return m_nextDestId; };
+	void SetNextDestId(int i) { m_nextDestId += i; }
+	void SetNextDest(Vector2 nextDest) { m_nextDest = nextDest; }
+
 
 private:
 	int m_health{ 100 };
-	int m_nextDest{ 0 };
+	Vector2 m_nextDest;
+	int m_nextDestId{ 0 };
 };
 

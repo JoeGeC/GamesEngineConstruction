@@ -14,6 +14,7 @@ void EnemyEntity::Update(Visualisation &viz)
 {
 	if (m_health <= 0)
 		m_alive = false;
+	MoveToDest(m_nextDest);
 }
 
 void EnemyEntity::Collision(int damage, string collider)

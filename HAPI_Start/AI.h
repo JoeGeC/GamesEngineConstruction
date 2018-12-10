@@ -11,11 +11,12 @@ public:
 	AI();
 	~AI();
 	void SpawnEnemy();
-	void CreateWave(Vector2 startPoint, vector<EnemyEntity*> enemies, vector<Vector2> route);
+	void CreateWave(Vector2 startPoint, std::vector<EnemyEntity*> enemies, std::vector<Vector2> route);
+	void Update();
 
 private:
 	int m_nextWave{ 0 };
-	vector<Wave> m_waves;
+	std::vector<Wave*> m_waves;
 	DWORD m_timeSinceLastSpawn{ 0 };
 };
 
