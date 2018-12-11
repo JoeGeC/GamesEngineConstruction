@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-
 #include "EnemyEntity.h"
 #include "Vector2.h"
 

@@ -16,6 +16,13 @@ void AI::Update()
 	{
 		i->FollowRoute();
 	}
+	
+	DWORD time = HAPI.GetTime();
+	if (time - m_timeSinceLastWave >= 15000)
+	{
+		m_nextWave++;
+		m_timeSinceLastWave = time;
+	}
 }
 
 void AI::CreateWave(Vector2 startPoint, vector<EnemyEntity*> enemies, vector<Vector2> route)

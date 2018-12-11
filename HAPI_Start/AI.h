@@ -18,5 +18,6 @@ private:
 	int m_nextWave{ 0 };
 	std::vector<Wave*> m_waves;
 	DWORD m_timeSinceLastSpawn{ 0 };
+	DWORD m_timeSinceLastWave{ 0 };
 };
 

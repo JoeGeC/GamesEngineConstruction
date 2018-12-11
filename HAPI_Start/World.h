@@ -2,6 +2,7 @@
 #include <vector>
 #include "Vector2.h"
 #include <HAPI_lib.h>
+#include "AI.h"
 
 using namespace HAPISPACE;
 
@@ -10,7 +11,6 @@ class Entity;
 class BulletEntity;
 class ExplosionEntity;
 class Sound;
-class AI;
 class EnemyEntity;
 
 class World
@@ -22,8 +22,7 @@ private:
 	std::vector<ExplosionEntity*> m_explosionVector;
 	std::vector<BulletEntity*> m_bulletVector;
 	std::vector<Sound*> m_soundVector;
-	std::vector<AI*> m_AIVector;
-	std::vector<EnemyEntity*> m_enemyVector;
+	AI m_AI;
 
 	bool LoadLevel();
 	void Update();
@@ -38,6 +37,6 @@ public:
 	void FireBullet();
 	void Collision();
 	void Explosion(Vector2 pos);
-
+	void CreateEnemy(int noOfEnemies, std::vector<EnemyEntity*> *enemyVector);
 };
 

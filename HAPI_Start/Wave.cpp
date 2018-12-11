@@ -50,6 +50,7 @@ void Wave::SpawnEnemy(int i)
 	if (m_enemies.size() > i)
 	{
 		m_enemies[i]->SetAlive(true);
+		m_enemies[i]->SetExploded(false);
 		m_enemies[i]->SetPosition(m_startPoint);
 		m_nextEnemy++;
 	}

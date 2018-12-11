@@ -50,15 +50,6 @@ bool World::LoadLevel()
 	m_entityVector.push_back(player);
 	player->SetPosition(Vector2(500, 700));
 
-	//enemies
-	for (int i = 0; i < 10; i++)
-	{
-		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
-		enemy->SetAlive(false);
-		m_entityVector.push_back(enemy);
-		m_enemyVector.push_back(enemy);
-	}
-
 	// bullets
 	for (int i = 0; i < 20; i++)
 	{
@@ -87,10 +78,15 @@ bool World::LoadLevel()
 	music->LoadSound();
 	music->PlayStreamed();
 
+	//enemies
+	std::vector<EnemyEntity*> enemyVector1;
+	std::vector<EnemyEntity*> enemyVector2;
+	CreateEnemy(10, &enemyVector1);
+	CreateEnemy(10, &enemyVector2);
+
 	//manage waves
-	AI *newAI = new AI();
-	newAI->CreateWave(Vector2(-50, -50), m_enemyVector, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
-	m_AIVector.push_back(newAI);
+	m_AI.CreateWave(Vector2(-50, -50), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
+	m_AI.CreateWave(Vector2(850, -50), enemyVector2, vector<Vector2>{Vector2(0, 100), Vector2(800, 300), Vector2(400, 500)});
 
 	return true;
 }
@@ -104,7 +100,7 @@ void World::Update()
 		{
 			HAPI.SetShowFPS(true);
 
-			m_AIVector[0]->SpawnEnemy();
+			m_AI.SpawnEnemy();
 
 			FireBullet();
 
@@ -120,8 +116,7 @@ void World::Update()
 				}
 			}
 
-			for (auto p : m_AIVector)
-				p->Update();
+			m_AI.Update();
 
 			//clear screen to black
 			m_viz->ClearToGrey(0);
@@ -231,4 +226,17 @@ void World::Collision()
 			}
 		}
 	}
+}
+
+void World::CreateEnemy(int noOfEnemies, std::vector<EnemyEntity*> *enemyVector)
+{
+	for (int i = 0; i < noOfEnemies; i++)
+	{
+		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
+		enemy->SetAlive(false);
+		enemy->SetExploded(true);
+		m_entityVector.push_back(enemy);
+		enemyVector->push_back(enemy);
+	}
+
 }
