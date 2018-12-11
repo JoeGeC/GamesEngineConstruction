@@ -28,6 +28,7 @@ private:
 	void Update();
 	int lastPlayerBullet{ 0 };
 	DWORD timeSinceLastUpdate{ 0 };
+	const DWORD tickTime{ 50 };
 
 public:
 	World();

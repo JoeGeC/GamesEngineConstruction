@@ -8,6 +8,11 @@
 #include "Sound.h"
 #include "AI.h"
 
+//TODO: INTERPOLATION
+//TODO: UI
+//TODO: MENU
+//TODO: LEVELS
+
 World::World()
 {
 }
@@ -96,7 +101,7 @@ void World::Update()
 	while (HAPI.Update())
 	{
 		DWORD time = HAPI.GetTime();
-		if (time - timeSinceLastUpdate > 3)
+		if (time - timeSinceLastUpdate > tickTime)
 		{
 			HAPI.SetShowFPS(true);
 

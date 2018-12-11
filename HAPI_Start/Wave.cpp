@@ -29,10 +29,13 @@ void Wave::FollowRoute()
 	{
 		if (e->IsAlive())
 		{
+			float speed = e->GetSpeed();
+			int nextDestId = e->GetNextDestId();
+			Vector2 pos = e->GetPosition();
 			//checks to see if enemy is at the nextdest
-			if (e->GetPosition().x >= m_route[e->GetNextDestId()].x - 1 && e->GetPosition().x <= m_route[e->GetNextDestId()].x + 1 && e->GetPosition().y >= m_route[e->GetNextDestId()].y - 1 && e->GetPosition().y <= m_route[e->GetNextDestId()].y + 1)
+			if (pos.x >= m_route[nextDestId].x - speed && pos.x <= m_route[nextDestId].x + speed && pos.y >= m_route[nextDestId].y - speed && pos.y <= m_route[nextDestId].y + speed)
 			{
-				if (e->GetNextDestId() == m_route.size() - 1)
+				if (nextDestId == m_route.size() - 1)
 				{
 					//if at last dest in route
 					e->SetNextDestId(-((int)m_route.size()));
