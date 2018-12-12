@@ -10,8 +10,12 @@ BackgroundEntity::~BackgroundEntity()
 
 void BackgroundEntity::Update(Visualisation &viz)
 {
+	Vector2 pos{ GetPosition() };
+
 	//move background
-	m_position.y += m_speed;
-	if (m_position.y >= 1000)
-		m_position.y -= 2000;
+	pos.y += m_speed;
+	if (pos.y >= 1000)
+		pos.y -= 2000;
+
+	SetPosition(pos);
 }

@@ -12,11 +12,14 @@ Entity::~Entity()
 {
 }
 
-void Entity::Render(Visualisation &viz)
+void Entity::Render(Visualisation &viz, float s)
 {
 	Animate();
 	m_entityRect = viz.GetSpriteCollection().at(m_spriteName)->CreateRectangle();
-	viz.RenderSprite(m_spriteName, (int)m_position.x, (int)m_position.y, true, m_frameNo);
+
+	Vector2 interPos(m_oldPosition + (m_position - m_oldPosition) * s);
+
+	viz.RenderSprite(m_spriteName, (int)interPos.x, (int)interPos.y, true, m_frameNo);
 }
 
 void Entity::MoveToDest(Vector2 dest)
@@ -29,16 +32,18 @@ void Entity::MoveToDest(Vector2 dest)
 	Vector2 direction = dirTemp / magnitude;
 
 	m_position += direction * m_speed;
+
+	SetPosition(m_position);
 }
 
 void Entity::Animate()
 {
 	//animation time
 	DWORD time = HAPI.GetTime();
-	if (time - lastFrameUpdateTime > 150)
+	if (time - m_lastFrameUpdateTime > 150)
 	{
 		m_frameNo++;
-		lastFrameUpdateTime = time;
+		m_lastFrameUpdateTime = time;
 	}
 	if (m_frameNo > m_noOfFrames - 1)
 		m_frameNo = 0;

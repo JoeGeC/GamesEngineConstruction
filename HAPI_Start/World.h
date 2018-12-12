@@ -27,7 +27,7 @@ private:
 	bool LoadLevel();
 	void Update();
 	int lastPlayerBullet{ 0 };
-	DWORD timeSinceLastUpdate{ 0 };
+	//DWORD timeSinceLastTick{ 0 };
 	const DWORD tickTime{ 50 };
 
 public:

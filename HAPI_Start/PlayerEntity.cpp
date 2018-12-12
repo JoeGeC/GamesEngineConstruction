@@ -14,6 +14,8 @@ PlayerEntity::~PlayerEntity()
 
 void PlayerEntity::Update(Visualisation &viz)
 {
+	Vector2 pos{ GetPosition() };
+
 	if (m_health <= 0)
 		m_alive = false;
 
@@ -25,43 +27,43 @@ void PlayerEntity::Update(Visualisation &viz)
 	{
 		if (keyData.scanCode['W'] || keyData.scanCode[HK_UP])
 		{
-			m_position.x += m_dSpeed;
-			m_position.y -= m_dSpeed;
+			pos.x += m_dSpeed;
+			pos.y -= m_dSpeed;
 		}
 		else if (keyData.scanCode['S'] || keyData.scanCode[HK_DOWN])
 		{
-			m_position.x += m_dSpeed;
-			m_position.y += m_dSpeed;
+			pos.x += m_dSpeed;
+			pos.y += m_dSpeed;
 		}
 		else
 		{
-			m_position.x += m_speed;
+			pos.x += m_speed;
 		}
 	}
 	else if (keyData.scanCode['A'] || keyData.scanCode[HK_LEFT])
 	{
 		if (keyData.scanCode['W'] || keyData.scanCode[HK_UP])
 		{
-			m_position.x -= m_dSpeed;
-			m_position.y -= m_dSpeed;
+			pos.x -= m_dSpeed;
+			pos.y -= m_dSpeed;
 		}
 		else if (keyData.scanCode['S'] || keyData.scanCode[HK_DOWN])
 		{
-			m_position.x -= m_dSpeed;
-			m_position.y += m_dSpeed;
+			pos.x -= m_dSpeed;
+			pos.y += m_dSpeed;
 		}
 		else
 		{
-			m_position.x -= m_speed;
+			pos.x -= m_speed;
 		}
 	}
 	else if (keyData.scanCode['W'] || keyData.scanCode[HK_UP])
 	{
-		m_position.y -= m_speed;
+		pos.y -= m_speed;
 	}
 	else if (keyData.scanCode['S'] || keyData.scanCode[HK_DOWN])
 	{
-		m_position.y += m_speed;
+		pos.y += m_speed;
 	}
 
 	//to move with xbox left joystick or dpad
@@ -74,41 +76,43 @@ void PlayerEntity::Update(Visualisation &viz)
 		{
 			if (thumbY > HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_UP])
 			{
-				m_position.x += m_dSpeed;
-				m_position.y -= m_dSpeed;
+				pos.x += m_dSpeed;
+				pos.y -= m_dSpeed;
 			}
 			else if (thumbY < -HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_DOWN])
 			{
-				m_position.x += m_dSpeed;
-				m_position.y += m_dSpeed;
+				pos.x += m_dSpeed;
+				pos.y += m_dSpeed;
 			}
 			else
 			{
-				m_position.x += m_speed;
+				pos.x += m_speed;
 			}
 		}
 		else if (thumbX < -HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_LEFT])
 		{
 			if (thumbY > HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_UP])
 			{
-				m_position.x -= m_dSpeed;
-				m_position.y -= m_dSpeed;
+				pos.x -= m_dSpeed;
+				pos.y -= m_dSpeed;
 			}
 			else if (thumbY < -HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_DOWN])
 			{
-				m_position.x -= m_dSpeed;
-				m_position.y += m_dSpeed;
+				pos.x -= m_dSpeed;
+				pos.y += m_dSpeed;
 			}
 			else
 			{
-				m_position.x -= m_speed;
+				pos.x -= m_speed;
 			}
 		}
 		else if (thumbY > HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_UP])
-			m_position.y -= m_speed;
+			pos.y -= m_speed;
 		else if (thumbY < -HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_DOWN])
-			m_position.y += m_speed;
+			pos.y += m_speed;
 	}
+
+	SetPosition(pos);
 }
 
 void PlayerEntity::Collision(int damage, string collider)

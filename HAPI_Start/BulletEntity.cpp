@@ -10,13 +10,17 @@ BulletEntity::~BulletEntity()
 
 void BulletEntity::Update(Visualisation &viz)
 {
-	if (GetSide() == ESide::ePlayer)
-		m_position.y -= m_speed;
-	else if (GetSide() == ESide::eEnemy)
-		m_position.y += m_speed;
+	Vector2 pos{ GetPosition() };
 
-	if (m_position.y <= -32 || m_position.y >= 1000)
+	if (GetSide() == ESide::ePlayer)
+		pos.y -= m_speed;
+	else if (GetSide() == ESide::eEnemy)
+		pos.y += m_speed;
+
+	if (pos.y <= -32 || pos.y >= 1000)
 		m_alive = false;
+
+	SetPosition(pos);
 }
 
 void BulletEntity::Collision(int damage, string collider)

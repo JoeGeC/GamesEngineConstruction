@@ -8,6 +8,8 @@
 #include "Sound.h"
 #include "AI.h"
 
+#include <cassert>
+
 //TODO: INTERPOLATION
 //TODO: UI
 //TODO: MENU
@@ -55,6 +57,12 @@ bool World::LoadLevel()
 	m_entityVector.push_back(player);
 	player->SetPosition(Vector2(500, 700));
 
+	//enemies
+	std::vector<EnemyEntity*> enemyVector1;
+	std::vector<EnemyEntity*> enemyVector2;
+	CreateEnemy(10, &enemyVector1);
+	CreateEnemy(10, &enemyVector2);
+
 	// bullets
 	for (int i = 0; i < 20; i++)
 	{
@@ -83,12 +91,6 @@ bool World::LoadLevel()
 	music->LoadSound();
 	music->PlayStreamed();
 
-	//enemies
-	std::vector<EnemyEntity*> enemyVector1;
-	std::vector<EnemyEntity*> enemyVector2;
-	CreateEnemy(10, &enemyVector1);
-	CreateEnemy(10, &enemyVector2);
-
 	//manage waves
 	m_AI.CreateWave(Vector2(-50, -50), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
 	m_AI.CreateWave(Vector2(850, -50), enemyVector2, vector<Vector2>{Vector2(0, 100), Vector2(800, 300), Vector2(400, 500)});
@@ -98,10 +100,12 @@ bool World::LoadLevel()
 
 void World::Update()
 {
+	DWORD lastTimeTicked{ 0 };
+
 	while (HAPI.Update())
 	{
-		DWORD time = HAPI.GetTime();
-		if (time - timeSinceLastUpdate > tickTime)
+		DWORD timeSinceLastTick{ HAPI.GetTime() - lastTimeTicked };
+		if (timeSinceLastTick >= tickTime)
 		{
 			HAPI.SetShowFPS(true);
 
@@ -114,29 +118,33 @@ void World::Update()
 			{
 				if (p->IsAlive())
 					p->Update(*m_viz);
-				if (p->GetSpriteName() != "bullet" && p->GetSpriteName() != "explosion" && !p->IsAlive() && !p->HasExploded())
+				/*if (p->GetSpriteName() != "bullet" && p->GetSpriteName() != "explosion" && !p->IsAlive() && !p->HasExploded())
 				{
 					Explosion(p->GetPosition());
 					p->SetExploded(true);
-				}
+				}*/
 			}
 
-			m_AI.Update();
-
+			m_AI.Update();		
+		
 			//clear screen to black
 			m_viz->ClearToGrey(0);
+
+			timeSinceLastTick = 0;
+			lastTimeTicked = HAPI.GetTime();
+
+			float s = timeSinceLastTick / (float)tickTime;
 
 			//render sprites
 			for (auto p : m_entityVector)
 			{
 				if (p->IsAlive())
-					p->Render(*m_viz);
+					p->Render(*m_viz, s);
 			}
 
-			//collisions
+			//check collisions
 			Collision();
-
-			timeSinceLastUpdate = time;
+			
 		}
 	}
 }
@@ -187,6 +195,7 @@ void World::Explosion(Vector2 pos)
 		{
 			e->SetAlive(true);
 			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
+			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
 			for (auto s : m_soundVector)
 			{
 				//TODO: Fix explosion sound looping
@@ -215,12 +224,8 @@ void World::Collision()
 					pRect.Translate((int)p->GetPosition().x, (int)p->GetPosition().y);
 					iRect.Translate((int)i->GetPosition().x, (int)i->GetPosition().y);
 
-					if ((pRect.m_right < iRect.m_left || pRect.m_left > iRect.m_right) // p is to one side of i
-						|| (pRect.m_bottom < iRect.m_top || pRect.m_top > iRect.m_bottom)) // p is completely above or below i
-					{
-						//No collision
-					}
-					else
+					if (!((pRect.m_right < iRect.m_left || pRect.m_left > iRect.m_right) // p is to one side of i
+						|| (pRect.m_bottom < iRect.m_top || pRect.m_top > iRect.m_bottom))) // p is completely above or below i
 					{
 						//Collision occurred
 						p->Collision(i->GetDamage(), i->GetSpriteName());
