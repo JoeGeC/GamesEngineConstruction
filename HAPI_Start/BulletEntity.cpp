@@ -1,6 +1,6 @@
 #include "BulletEntity.h"
 
-BulletEntity::BulletEntity(std::string spriteName, int noOfFrames) : Entity(spriteName, noOfFrames)
+BulletEntity::BulletEntity(std::string spriteName, int noOfFrames, float speed) : Entity(spriteName, noOfFrames, speed)
 {
 }
 

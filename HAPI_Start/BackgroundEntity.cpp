@@ -1,6 +1,6 @@
 #include "BackgroundEntity.h"
 
-BackgroundEntity::BackgroundEntity(std::string spriteName, int noOfFrames) : Entity(spriteName, noOfFrames)
+BackgroundEntity::BackgroundEntity(std::string spriteName, int noOfFrames, float speed) : Entity(spriteName, noOfFrames, speed)
 {
 }
 

@@ -3,7 +3,7 @@
 #include "Rectangle.h"
 
 
-Entity::Entity(std::string spriteName, int noOfFrames) : m_spriteName(spriteName), m_noOfFrames(noOfFrames)
+Entity::Entity(std::string spriteName, int noOfFrames, float speed) : m_spriteName(spriteName), m_noOfFrames(noOfFrames), m_speed(speed)
 {
 }
 

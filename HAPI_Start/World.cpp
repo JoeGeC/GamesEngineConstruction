@@ -10,7 +10,6 @@
 
 #include <cassert>
 
-//TODO: INTERPOLATION
 //TODO: UI
 //TODO: MENU
 //TODO: LEVELS
@@ -26,7 +25,6 @@ World::~World()
 
 	for (auto p : m_entityVector)
 		delete p;
-
 	for (auto p : m_soundVector)
 		delete p;
 }
@@ -38,35 +36,37 @@ bool World::LoadLevel()
 		return false;
 	if (!m_viz->CreateSprite("background", "Data\\sprites\\spaceBackground.png", false, 1))
 		return false;
-	if (!m_viz->CreateSprite("bullet", "Data\\sprites\\bullet.png", true, 1))
+	if (!m_viz->CreateSprite("bullet", "Data\\sprites\\bullet2.png", true, 1))
 		return false;
 	if (!m_viz->CreateSprite("enemy", "Data\\sprites\\enemy.png", true, 4))
+		return false;
+	if (!m_viz->CreateSprite("enemy1", "Data\\sprites\\enemy1.png", true, 4))
 		return false;
 	if (!m_viz->CreateSprite("explosion", "Data\\sprites\\Explosion.png", true, 12))
 		return false;
 
-	BackgroundEntity *background1 = new BackgroundEntity("background", 1);
+	BackgroundEntity *background1 = new BackgroundEntity("background", 1, 5);
 	m_entityVector.push_back(background1);
 	background1->SetPosition(Vector2(0, 0));
 
-	BackgroundEntity *background2 = new BackgroundEntity("background", 1);
+	BackgroundEntity *background2 = new BackgroundEntity("background", 1, 5);
 	m_entityVector.push_back(background2);
 	background2->SetPosition(Vector2(0, -1000));
 	
-	PlayerEntity *player = new PlayerEntity("player", 3);
+	PlayerEntity *player = new PlayerEntity("player", 3, 15);
 	m_entityVector.push_back(player);
 	player->SetPosition(Vector2(500, 700));
 
 	//enemies
 	std::vector<EnemyEntity*> enemyVector1;
 	std::vector<EnemyEntity*> enemyVector2;
-	CreateEnemy(10, &enemyVector1);
-	CreateEnemy(10, &enemyVector2);
+	CreateEnemy(10, "enemy", &enemyVector1, 5, 1000);
+	CreateEnemy(10, "enemy1", &enemyVector2, 3, 0);
 
 	// bullets
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 1000; i++)
 	{
-		BulletEntity *bullet = new BulletEntity("bullet", 1);
+		BulletEntity *bullet = new BulletEntity("bullet", 1, 20);
 		bullet->SetAlive(false);
 		m_entityVector.push_back(bullet);
 		m_bulletVector.push_back(bullet);
@@ -75,7 +75,7 @@ bool World::LoadLevel()
 	//explosions
 	for (int i = 0; i < 20; i++)
 	{
-		ExplosionEntity *explosion = new ExplosionEntity("explosion", 12);
+		ExplosionEntity *explosion = new ExplosionEntity("explosion", 12, 0);
 		explosion->SetAlive(false);
 		m_entityVector.push_back(explosion);
 		m_explosionVector.push_back(explosion);
@@ -118,11 +118,6 @@ void World::Update()
 			{
 				if (p->IsAlive())
 					p->Update(*m_viz);
-				/*if (p->GetSpriteName() != "bullet" && p->GetSpriteName() != "explosion" && !p->IsAlive() && !p->HasExploded())
-				{
-					Explosion(p->GetPosition());
-					p->SetExploded(true);
-				}*/
 			}
 
 			m_AI.Update();		
@@ -144,7 +139,6 @@ void World::Update()
 
 			//check collisions
 			Collision();
-			
 		}
 	}
 }
@@ -181,10 +175,32 @@ void World::FireBullet()
 						playerPos = p->GetPosition();
 				b->SetAlive(true);
 				b->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
+				b->SetSide(ESide::ePlayer);
 				return;
 			}
 		}
 	}
+
+	for (auto e : m_enemyVector)
+	{
+		float fireRate = e->GetFireRate();
+		if (fireRate > 0 && time - e->GetTimeSinceLastBulletFired() > fireRate && e->IsAlive())
+		{
+			e->SetTimeSinceLastBulletFired(time);
+			for (auto b : m_bulletVector)
+			{
+				if (!b->IsAlive())
+				{
+					Vector2 enemyPos{ e->GetPosition() };
+					b->SetAlive(true);
+					b->SetPosition(Vector2(enemyPos.x + 16, enemyPos.y + 20));
+					b->SetSide(ESide::eEnemy);
+					return;
+				}
+			}
+		}
+	}
+
 }
 
 void World::Explosion(Vector2 pos)
@@ -194,8 +210,7 @@ void World::Explosion(Vector2 pos)
 		if (!e->IsAlive())
 		{
 			e->SetAlive(true);
-			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
-			e->SetPosition(Vector2(pos.x - 20, pos.y - 40));
+			e->SetPosition(Vector2(pos.x - 20, pos.y - 40), Vector2(pos.x - 20, pos.y - 40)); //needed twice because not interpolating between two points
 			for (auto s : m_soundVector)
 			{
 				//TODO: Fix explosion sound looping
@@ -215,7 +230,7 @@ void World::Collision()
 		{
 			for (auto i : m_entityVector)
 			{
-				if (i->IsAlive() && i->GetSide() != ESide::eNeutral && p->GetSide() != i->GetSide())
+				if (i->IsAlive() && i->GetSide() != ESide::eNeutral && p->GetSide() != i->GetSide() && !(p->GetSpriteName() == "bullet" && i->GetSpriteName() == "bullet"))
 				{
 					Rectangle pRect = p->GetRect();
 					Rectangle iRect = i->GetRect();
@@ -238,15 +253,16 @@ void World::Collision()
 	}
 }
 
-void World::CreateEnemy(int noOfEnemies, std::vector<EnemyEntity*> *enemyVector)
+void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<EnemyEntity*> *enemyVector, float speed, float fireRate)
 {
 	for (int i = 0; i < noOfEnemies; i++)
 	{
-		EnemyEntity *enemy = new EnemyEntity("enemy", 4);
+		EnemyEntity *enemy = new EnemyEntity(enemyName, 4, speed);
 		enemy->SetAlive(false);
 		enemy->SetExploded(true);
+		enemy->SetFireRate(fireRate);
 		m_entityVector.push_back(enemy);
 		enemyVector->push_back(enemy);
+		m_enemyVector.push_back(enemy);
 	}
-
 }

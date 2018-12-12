@@ -41,7 +41,7 @@ protected:
 	DWORD m_lastFrameUpdateTime{ 0 };
 
 public:
-	Entity(std::string spriteName, int noOfFrames);
+	Entity(std::string spriteName, int noOfFrames, float speed);
 	virtual ~Entity();
 	virtual void Update(Visualisation &viz) = 0;
 	virtual ESide GetSide() const = 0;
@@ -53,6 +53,7 @@ public:
 	void Render(Visualisation &viz, float s);
 
 	void SetPosition(Vector2 newPos) { m_oldPosition = m_position;  m_position = newPos; }
+	void SetPosition(Vector2 newPos, Vector2 newOldPos) { m_oldPosition = newOldPos; m_position = newPos; }
 	void SetAlive(bool isAlive) { m_alive = isAlive; }
 	void SetExploded(bool exploded) { m_exploded = exploded; }
 
