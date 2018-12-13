@@ -15,7 +15,10 @@ void BackgroundEntity::Update(Visualisation &viz)
 	//move background
 	pos.y += m_speed;
 	if (pos.y >= 1000)
+	{
 		pos.y -= 2000;
-
-	SetPosition(pos);
+		SetPosition(pos, pos);
+	}
+	else
+		SetPosition(pos);
 }

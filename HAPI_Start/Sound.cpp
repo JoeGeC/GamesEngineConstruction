@@ -23,7 +23,8 @@ void Sound::PlaySound()
 void Sound::PlayStreamed()
 {
 	HAPI_TSoundOptions options;
-	options.volume = 0.5f;
+	options.volume = 0.3f;
+	options.loop = true;
 	int id = 0;
 	HAPI.PlayStreamedMedia(m_fileName, options, id);
 }

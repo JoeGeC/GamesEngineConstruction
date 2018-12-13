@@ -43,6 +43,7 @@ protected:
 public:
 	Entity(std::string spriteName, int noOfFrames, float speed);
 	virtual ~Entity();
+	void PreUpdate(Visualisation &viz);
 	virtual void Update(Visualisation &viz) = 0;
 	virtual ESide GetSide() const = 0;
 	virtual int GetDamage() const { return 0; };

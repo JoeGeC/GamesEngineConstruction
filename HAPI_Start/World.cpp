@@ -117,13 +117,10 @@ void World::Update()
 			for (auto p : m_entityVector)
 			{
 				if (p->IsAlive())
-					p->Update(*m_viz);
+					p->PreUpdate(*m_viz);
 			}
 
 			m_AI.Update();		
-		
-			//clear screen to black
-			m_viz->ClearToGrey(0);
 
 			lastTimeTicked = HAPI.GetTime();
 			timeSinceLastTick = 0;
@@ -131,6 +128,9 @@ void World::Update()
 			//check collisions
 			Collision();
 		}
+
+		//clear screen to black
+		m_viz->ClearToGrey(0);
 
 		float s = timeSinceLastTick / (float)tickTime;
 		assert(s >= 0 && s <= 1);
@@ -141,8 +141,6 @@ void World::Update()
 			if (p->IsAlive())
 				p->Render(*m_viz, s);
 		}
-
-		
 	}
 }
 

@@ -12,10 +12,17 @@ Entity::~Entity()
 {
 }
 
+void Entity::PreUpdate(Visualisation &viz)
+{
+	//rectangles
+	m_entityRect = viz.GetSpriteCollection().at(m_spriteName)->CreateRectangle();
+
+	Update(viz);
+}
+
 void Entity::Render(Visualisation &viz, float s)
 {
 	Animate();
-	m_entityRect = viz.GetSpriteCollection().at(m_spriteName)->CreateRectangle();
 
 	Vector2 interPos(m_oldPosition + (m_position - m_oldPosition) * s);
 
@@ -24,18 +31,18 @@ void Entity::Render(Visualisation &viz, float s)
 
 void Entity::MoveToDest(Vector2 dest)
 {
+	Vector2 pos{ GetPosition() };
 
-
-	Vector2 distTemp = (m_position - dest);
+	Vector2 distTemp = (pos - dest);
 	//float distance = sqrt(distTemp.x * distTemp.x + distTemp.y * distTemp.y);
 
-	Vector2 dirTemp = (dest - m_position);
+	Vector2 dirTemp = (dest - pos);
 	float magnitude = sqrt(dirTemp.x * dirTemp.x + distTemp.y * distTemp.y);
 	Vector2 direction = dirTemp / magnitude;
 
-	m_position += direction * m_speed;
+	pos += direction * m_speed;
 
-	SetPosition(m_position);
+	SetPosition(pos);
 }
 
 void Entity::Animate()

@@ -69,7 +69,7 @@ void Visualisation::RenderSprite(const std::string& name, int posX, int posY, bo
 
 void Visualisation::ClearToGrey(int colour)
 {
-	memset(m_screenPnter, colour, m_screenRect.Width() * m_screenRect.Width() * 4);
+	memset(m_screenPnter, colour, m_screenRect.Width() * m_screenRect.Height() * 4);
 }
 
 void Visualisation::ClearToColour(HAPI_TColour colour)

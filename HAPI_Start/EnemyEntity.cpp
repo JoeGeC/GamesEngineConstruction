@@ -10,6 +10,8 @@ EnemyEntity::~EnemyEntity()
 {
 }
 
+
+
 void EnemyEntity::Update(Visualisation &viz)
 {
 	if (m_health <= 0)
