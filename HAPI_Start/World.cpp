@@ -86,7 +86,7 @@ bool World::LoadLevel()
 	explosionSound->LoadSound();
 	m_soundVector.push_back(explosionSound);
 
-	Sound *music = new Sound("explosion", "Data\\sounds\\music.flac");
+	Sound *music = new Sound("music", "Data\\sounds\\music.flac");
 	m_soundVector.push_back(music);
 	music->LoadSound();
 	music->PlayStreamed();
@@ -125,21 +125,24 @@ void World::Update()
 			//clear screen to black
 			m_viz->ClearToGrey(0);
 
-			timeSinceLastTick = 0;
 			lastTimeTicked = HAPI.GetTime();
-
-			float s = timeSinceLastTick / (float)tickTime;
-
-			//render sprites
-			for (auto p : m_entityVector)
-			{
-				if (p->IsAlive())
-					p->Render(*m_viz, s);
-			}
+			timeSinceLastTick = 0;
 
 			//check collisions
 			Collision();
 		}
+
+		float s = timeSinceLastTick / (float)tickTime;
+		assert(s >= 0 && s <= 1);
+
+		//render sprites
+		for (auto p : m_entityVector)
+		{
+			if (p->IsAlive())
+				p->Render(*m_viz, s);
+		}
+
+		
 	}
 }
 
@@ -213,7 +216,6 @@ void World::Explosion(Vector2 pos)
 			e->SetPosition(Vector2(pos.x - 20, pos.y - 40), Vector2(pos.x - 20, pos.y - 40)); //needed twice because not interpolating between two points
 			for (auto s : m_soundVector)
 			{
-				//TODO: Fix explosion sound looping
 				if (s->GetName() == "explosion")
 					s->PlaySound();
 			}

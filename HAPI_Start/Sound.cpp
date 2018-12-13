@@ -12,7 +12,7 @@ Sound::~Sound()
 void Sound::LoadSound()
 {
 	if (!HAPI.LoadSound(m_fileName))
-	HAPI.UserMessage("Could not load sound: " + m_fileName, "ERROR");
+		HAPI.UserMessage("Could not load sound: " + m_fileName, "ERROR");
 }
 
 void Sound::PlaySound()
@@ -22,5 +22,8 @@ void Sound::PlaySound()
 
 void Sound::PlayStreamed()
 {
-	HAPI.PlayStreamedMedia(m_fileName);
+	HAPI_TSoundOptions options;
+	options.volume = 0.5f;
+	int id = 0;
+	HAPI.PlayStreamedMedia(m_fileName, options, id);
 }

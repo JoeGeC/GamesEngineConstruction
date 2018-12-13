@@ -24,6 +24,8 @@ void Entity::Render(Visualisation &viz, float s)
 
 void Entity::MoveToDest(Vector2 dest)
 {
+
+
 	Vector2 distTemp = (m_position - dest);
 	//float distance = sqrt(distTemp.x * distTemp.x + distTemp.y * distTemp.y);
 
