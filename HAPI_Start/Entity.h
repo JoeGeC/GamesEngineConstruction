@@ -39,6 +39,7 @@ protected:
 	int m_frameNo{ 0 };
 	int m_noOfFrames{ 0 };
 	DWORD m_lastFrameUpdateTime{ 0 };
+	int m_health{ 100 };
 
 public:
 	Entity(std::string spriteName, int noOfFrames, float speed);
@@ -58,11 +59,12 @@ public:
 	void SetAlive(bool isAlive) { m_alive = isAlive; }
 	void SetExploded(bool exploded) { m_exploded = exploded; }
 
-	std::string GetSpriteName() const { return m_spriteName; };
-	bool IsAlive() const { return m_alive; };
-	bool HasExploded() const { return m_exploded; };
-	Vector2 GetPosition() const { return m_position; };
-	Rectangle GetRect() const { return m_entityRect; };
-	float GetSpeed() const { return m_speed; };
+	std::string GetSpriteName() const { return m_spriteName; }
+	bool IsAlive() const { return m_alive; }
+	bool HasExploded() const { return m_exploded; }
+	Vector2 GetPosition() const { return m_position; }
+	Rectangle GetRect() const { return m_entityRect; }
+	float GetSpeed() const { return m_speed; }
+	int GetHealth() const { return m_health; }
 };
 

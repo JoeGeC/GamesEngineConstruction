@@ -23,7 +23,6 @@ public:
 	void SetFireRate(float fireRate) { m_fireRate = fireRate; }
 
 private:
-	int m_health{ 100 };
 	Vector2 m_nextDest;
 	int m_nextDestId{ 0 };
 	DWORD m_timeSinceLastBulletFired{ 0 };

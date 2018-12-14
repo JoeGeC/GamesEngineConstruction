@@ -8,6 +8,7 @@
 #include "Sound.h"
 #include "AI.h"
 
+
 #include <cassert>
 
 //TODO: UI
@@ -43,6 +44,8 @@ bool World::LoadLevel()
 	if (!m_viz->CreateSprite("enemy1", "Data\\sprites\\enemy1.png", true, 4))
 		return false;
 	if (!m_viz->CreateSprite("explosion", "Data\\sprites\\Explosion.png", true, 12))
+		return false;
+	if (!m_viz->CreateSprite("pauseButton", "Data\\sprites\\pauseButton.png", true, 1))
 		return false;
 
 	BackgroundEntity *background1 = new BackgroundEntity("background", 1, 5);
@@ -95,6 +98,10 @@ bool World::LoadLevel()
 	m_AI.CreateWave(Vector2(-50, -50), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
 	m_AI.CreateWave(Vector2(850, -50), enemyVector2, vector<Vector2>{Vector2(0, 100), Vector2(800, 300), Vector2(400, 500)});
 
+	//UI
+	Button *pauseButton = new Button("pauseButton", Vector2(1, 1));
+	m_buttonVector.push_back(pauseButton);
+
 	return true;
 }
 
@@ -104,43 +111,49 @@ void World::Update()
 
 	while (HAPI.Update())
 	{
-		DWORD timeSinceLastTick{ HAPI.GetTime() - lastTimeTicked };
-		if (timeSinceLastTick >= tickTime)
+		if (!m_paused)
 		{
-			HAPI.SetShowFPS(true);
+			DWORD timeSinceLastTick{ HAPI.GetTime() - lastTimeTicked };
+			if (timeSinceLastTick >= tickTime)
+			{
+				HAPI.SetShowFPS(true);
 
-			m_AI.SpawnEnemy();
+				m_AI.SpawnEnemy();
 
-			FireBullet();
+				FireEnemyBullet();
 
-			//update what entities are doing
+				//update what entities are doing
+				for (auto p : m_entityVector)
+				{
+					if (p->IsAlive() && p->GetSpriteName() == "player")
+						FirePlayerBullet();
+					if (p->IsAlive())
+						p->PreUpdate(*m_viz);
+				}
+
+				m_AI.Update();
+
+				lastTimeTicked = HAPI.GetTime();
+				timeSinceLastTick = 0;
+
+				//check collisions
+				Collision();
+			}
+
+			//clear screen to black
+			m_viz->ClearToGrey(0);
+
+			float s = timeSinceLastTick / (float)tickTime;
+			assert(s >= 0 && s <= 1);
+
+			//render sprites
 			for (auto p : m_entityVector)
 			{
 				if (p->IsAlive())
-					p->PreUpdate(*m_viz);
+					p->Render(*m_viz, s);
 			}
-
-			m_AI.Update();		
-
-			lastTimeTicked = HAPI.GetTime();
-			timeSinceLastTick = 0;
-
-			//check collisions
-			Collision();
 		}
-
-		//clear screen to black
-		m_viz->ClearToGrey(0);
-
-		float s = timeSinceLastTick / (float)tickTime;
-		assert(s >= 0 && s <= 1);
-
-		//render sprites
-		for (auto p : m_entityVector)
-		{
-			if (p->IsAlive())
-				p->Render(*m_viz, s);
-		}
+		RenderUI();
 	}
 }
 
@@ -148,7 +161,7 @@ void World::Run()
 {
 	m_viz = new Visualisation;
 
-	if (!m_viz->Initialise(800, 1000))
+	if (!m_viz->Initialise(m_screenWidth, m_screenHeight))
 		return;
 
 	if (!LoadLevel())
@@ -158,12 +171,13 @@ void World::Run()
 
 }
 
-void World::FireBullet()
+void World::FirePlayerBullet()
 {
 	const HAPI_TKeyboardData &keyData = HAPI.GetKeyboardData();
-
+	const HAPI_TControllerData &contData = HAPI.GetControllerData(0);
+	
 	DWORD time = HAPI.GetTime();
-	if (time - lastPlayerBullet > 300 && keyData.scanCode[HK_SPACE])
+	if (time - lastPlayerBullet > 300 && (keyData.scanCode[HK_SPACE] || contData.digitalButtons[HK_DIGITAL_A]))
 	{
 		lastPlayerBullet = time;
 		for (auto b : m_bulletVector)
@@ -181,7 +195,11 @@ void World::FireBullet()
 			}
 		}
 	}
+}
 
+void World::FireEnemyBullet()
+{
+	DWORD time = HAPI.GetTime();
 	for (auto e : m_enemyVector)
 	{
 		float fireRate = e->GetFireRate();
@@ -265,4 +283,33 @@ void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<Enem
 		enemyVector->push_back(enemy);
 		m_enemyVector.push_back(enemy);
 	}
+}
+
+void World::RenderUI()
+{
+	int playerHealth{ 0 };
+	for (auto p : m_entityVector)
+	{
+		if (p->GetSpriteName() == "player")
+		{
+			playerHealth = p->GetHealth();
+			break;
+		}
+	}
+
+	for (auto& b : m_buttonVector)
+	{
+		b->Update(*m_viz);
+		b->Render(*m_viz);
+		if (b->GetSpriteName() == "pauseButton" && b->IsClicked())
+		{
+			m_paused = true;
+			HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "PAUSED", 60, eBold);
+		}
+		else
+			m_paused = false;
+	}
+
+	HAPI.RenderText(300, 50, HAPI_TColour::WHITE, "LEVEL 1", 30, eBold);
+	HAPI.RenderText(10, m_screenHeight - 50, HAPI_TColour::WHITE, "Health: " + std::to_string(playerHealth), 30, eBold);
 }

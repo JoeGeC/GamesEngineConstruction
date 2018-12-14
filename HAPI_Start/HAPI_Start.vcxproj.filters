@@ -25,11 +25,11 @@
     <Filter Include="AI">
       <UniqueIdentifier>{0e90d3e8-60a6-483a-a335-d45792933fb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{a8717617-4674-47f7-aa19-ed2dc39f4055}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Visualisation.cpp">
       <Filter>Visualisation</Filter>
     </ClCompile>
@@ -68,6 +68,12 @@
     </ClCompile>
     <ClCompile Include="AI.cpp">
       <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="AI.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

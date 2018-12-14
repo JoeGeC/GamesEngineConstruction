@@ -16,7 +16,6 @@ void BulletEntity::Update(Visualisation &viz)
 		pos.y -= m_speed;
 	else if (GetSide() == ESide::eEnemy)
 		pos.y += m_speed;
-
 	if (pos.y <= -32 || pos.y >= 1000)
 		m_alive = false;
 
