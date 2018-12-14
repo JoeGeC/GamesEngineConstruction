@@ -10,14 +10,15 @@ AI::~AI()
 {
 }
 
-void AI::Update()
+void AI::Update(Vector2 playerPos)
 {
 	for (auto i : m_waves)
 	{
-		i->FollowRoute();
+		i->FollowRoute(playerPos);
 	}
 	
 	DWORD time = HAPI.GetTime();
+
 	if (time - m_timeSinceLastWave >= 15000)
 	{
 		m_nextWave++;

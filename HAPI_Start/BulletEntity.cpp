@@ -22,7 +22,8 @@ void BulletEntity::Update(Visualisation &viz)
 	SetPosition(pos);
 }
 
-void BulletEntity::Collision(int damage, string collider)
+int BulletEntity::Collision(int damage, string collider)
 {
 	m_alive = false;
+	return 0;
 }

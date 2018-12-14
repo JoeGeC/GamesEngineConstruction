@@ -9,7 +9,7 @@ public:
 	void Update(Visualisation &viz) override final;
 	ESide GetSide() const override final { return m_side; }
 	int GetDamage() const override final { return 20; }
-	void Collision(int damage, string collider) override final;
+	int Collision(int damage, string collider) override final;
 
 	void SetSide(ESide side) { m_side = side; }
 

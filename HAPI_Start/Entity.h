@@ -48,7 +48,7 @@ public:
 	virtual void Update(Visualisation &viz) = 0;
 	virtual ESide GetSide() const = 0;
 	virtual int GetDamage() const { return 0; };
-	virtual void Collision(int damage, string collider) {};
+	virtual int Collision(int damage, string collider) { return 0; };
 	void MoveToDest(Vector2 dest);
 	void Animate();
 

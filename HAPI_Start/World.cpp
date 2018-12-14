@@ -11,9 +11,9 @@
 
 #include <cassert>
 
-//TODO: UI
 //TODO: MENU
 //TODO: LEVELS
+//TODO: RESET
 
 World::World()
 {
@@ -63,8 +63,8 @@ bool World::LoadLevel()
 	//enemies
 	std::vector<EnemyEntity*> enemyVector1;
 	std::vector<EnemyEntity*> enemyVector2;
-	CreateEnemy(10, "enemy", &enemyVector1, 5, 1000);
-	CreateEnemy(10, "enemy1", &enemyVector2, 3, 0);
+	CreateEnemy(10, "enemy", &enemyVector1, EType::eKamikaze, 20, 30, 0, 20);
+	CreateEnemy(10, "enemy1", &enemyVector2, EType::eShooter, 30, 3, 1000, 30);
 
 	// bullets
 	for (int i = 0; i < 1000; i++)
@@ -89,13 +89,17 @@ bool World::LoadLevel()
 	explosionSound->LoadSound();
 	m_soundVector.push_back(explosionSound);
 
+	Sound *pewSound = new Sound("pew", "Data\\sounds\\pew.flac");
+	pewSound->LoadSound();
+	m_soundVector.push_back(pewSound);
+
 	Sound *music = new Sound("music", "Data\\sounds\\music.flac");
 	m_soundVector.push_back(music);
 	music->LoadSound();
 	music->PlayStreamed();
 
 	//manage waves
-	m_AI.CreateWave(Vector2(-50, -50), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
+	m_AI.CreateWave(Vector2(-100, -100), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
 	m_AI.CreateWave(Vector2(850, -50), enemyVector2, vector<Vector2>{Vector2(0, 100), Vector2(800, 300), Vector2(400, 500)});
 
 	//UI
@@ -122,16 +126,21 @@ void World::Update()
 
 				FireEnemyBullet();
 
+				Vector2 playerPos{ (float)m_screenWidth / 2, (float)m_screenHeight + 1000 };
+
 				//update what entities are doing
 				for (auto p : m_entityVector)
 				{
 					if (p->IsAlive() && p->GetSpriteName() == "player")
+					{
 						FirePlayerBullet();
+						playerPos = p->GetPosition();
+					}
 					if (p->IsAlive())
 						p->PreUpdate(*m_viz);
 				}
 
-				m_AI.Update();
+				m_AI.Update(playerPos);
 
 				lastTimeTicked = HAPI.GetTime();
 				timeSinceLastTick = 0;
@@ -139,9 +148,6 @@ void World::Update()
 				//check collisions
 				Collision();
 			}
-
-			//clear screen to black
-			m_viz->ClearToGrey(0);
 
 			float s = timeSinceLastTick / (float)tickTime;
 			assert(s >= 0 && s <= 1);
@@ -152,7 +158,11 @@ void World::Update()
 				if (p->IsAlive())
 					p->Render(*m_viz, s);
 			}
+
+			EndGame();
+			WinGame();
 		}
+
 		RenderUI();
 	}
 }
@@ -191,6 +201,11 @@ void World::FirePlayerBullet()
 				b->SetAlive(true);
 				b->SetPosition(Vector2(playerPos.x + 16, playerPos.y - 20));
 				b->SetSide(ESide::ePlayer);
+				for (auto s : m_soundVector)
+				{
+					if (s->GetName() == "pew")
+						s->PlaySound();
+				}
 				return;
 			}
 		}
@@ -261,8 +276,8 @@ void World::Collision()
 						|| (pRect.m_bottom < iRect.m_top || pRect.m_top > iRect.m_bottom))) // p is completely above or below i
 					{
 						//Collision occurred
-						p->Collision(i->GetDamage(), i->GetSpriteName());
-						i->Collision(p->GetDamage(), p->GetSpriteName());
+						m_score += p->Collision(i->GetDamage(), i->GetSpriteName());
+						m_score += i->Collision(p->GetDamage(), p->GetSpriteName());
 						Explosion(i->GetPosition());
 					}
 				}
@@ -271,11 +286,11 @@ void World::Collision()
 	}
 }
 
-void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<EnemyEntity*> *enemyVector, float speed, float fireRate)
+void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<EnemyEntity*> *enemyVector, EType type, int health, float speed, float fireRate, int score)
 {
 	for (int i = 0; i < noOfEnemies; i++)
 	{
-		EnemyEntity *enemy = new EnemyEntity(enemyName, 4, speed);
+		EnemyEntity *enemy = new EnemyEntity(enemyName, 4, speed, score, health, type);
 		enemy->SetAlive(false);
 		enemy->SetExploded(true);
 		enemy->SetFireRate(fireRate);
@@ -287,29 +302,59 @@ void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<Enem
 
 void World::RenderUI()
 {
-	int playerHealth{ 0 };
-	for (auto p : m_entityVector)
+	if (!m_gameOver)
 	{
-		if (p->GetSpriteName() == "player")
+		int playerHealth{ 0 };
+		for (auto p : m_entityVector)
 		{
-			playerHealth = p->GetHealth();
-			break;
+			if (p->GetSpriteName() == "player")
+			{
+				playerHealth = p->GetHealth();
+				break;
+			}
+		}
+
+		for (auto& b : m_buttonVector)
+		{
+			b->Update(*m_viz);
+			b->Render(*m_viz);
+			if (b->GetSpriteName() == "pauseButton" && b->IsClicked())
+			{
+				m_paused = true;
+				HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "PAUSED", 60, eBold);
+			}
+			else
+				m_paused = false;
+		}
+
+		HAPI.RenderText(300, 50, HAPI_TColour::WHITE, "LEVEL 1", 30, eBold);
+		HAPI.RenderText(10, m_screenHeight - 50, HAPI_TColour::WHITE, "Health: " + std::to_string(playerHealth), 30, eBold);
+		HAPI.RenderText(m_screenWidth / 2 - 120, 10, HAPI_TColour::WHITE, "Score: " + std::to_string(m_score), 30, eBold);
+	}
+}
+
+void World::EndGame()
+{
+	for (const auto e : m_entityVector)
+	{
+		if (e->GetSpriteName() == "player" && !e->IsAlive())
+		{
+			m_gameOver = true;
+			HAPI.RenderText(m_screenWidth / 2 - 100, m_screenHeight / 2 - 100, HAPI_TColour::WHITE, "GAME OVER", 30, eBold);
+			HAPI.RenderText(m_screenWidth / 2 - 150, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
 		}
 	}
+}
 
-	for (auto& b : m_buttonVector)
+void World::WinGame()
+{
+	for (const auto e : m_enemyVector)
 	{
-		b->Update(*m_viz);
-		b->Render(*m_viz);
-		if (b->GetSpriteName() == "pauseButton" && b->IsClicked())
+		if (e->IsAlive())
 		{
-			m_paused = true;
-			HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "PAUSED", 60, eBold);
+			return;
 		}
-		else
-			m_paused = false;
 	}
-
-	HAPI.RenderText(300, 50, HAPI_TColour::WHITE, "LEVEL 1", 30, eBold);
-	HAPI.RenderText(10, m_screenHeight - 50, HAPI_TColour::WHITE, "Health: " + std::to_string(playerHealth), 30, eBold);
+	HAPI.RenderText(m_screenWidth / 2 - 100, m_screenHeight / 2 - 100, HAPI_TColour::WHITE, "CONGRATULATIONS", 30, eBold);
+	HAPI.RenderText(m_screenWidth / 2 - 150, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
 }

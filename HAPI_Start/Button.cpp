@@ -20,7 +20,7 @@ void Button::Update(Visualisation &viz)
 	m_buttonRect.Translate(m_position.x, m_position.y);
 
 	DWORD time = HAPI.GetTime();
-	if (time - m_lastClickTime > 100)
+	if (time - m_lastClickTime > 200)
 	{
 		if (!((m_buttonRect.m_right < mouseData.x || m_buttonRect.m_left > mouseData.x)
 			|| (m_buttonRect.m_bottom < mouseData.y || m_buttonRect.m_top > mouseData.y))

@@ -1,12 +1,9 @@
 #include "Wave.h"
 
-
-
 Wave::Wave(Vector2 startPoint) : m_startPoint(startPoint)
 {
 
 }
-
 
 Wave::~Wave()
 {
@@ -23,27 +20,34 @@ void Wave::PopulateEnemies(EnemyEntity* enemy)
 	enemy->SetNextDest(m_route[0]);
 }
 
-void Wave::FollowRoute()
+void Wave::FollowRoute(Vector2 playerPos)
 {
 	for (auto e : m_enemies)
 	{
 		if (e->IsAlive())
 		{
-			float speed = e->GetSpeed();
-			int nextDestId = e->GetNextDestId();
-			Vector2 pos = e->GetPosition();
-			//checks to see if enemy is at the nextdest
-			if (pos.x >= m_route[nextDestId].x - speed && pos.x <= m_route[nextDestId].x + speed && pos.y >= m_route[nextDestId].y - speed && pos.y <= m_route[nextDestId].y + speed)
+			if (e->GetType() == EType::eShooter)
 			{
-				if (nextDestId == m_route.size() - 1)
+				float speed = e->GetSpeed();
+				int nextDestId = e->GetNextDestId();
+				Vector2 pos = e->GetPosition();
+				//checks to see if enemy is at the nextdest
+				if (pos.x >= m_route[nextDestId].x - speed && pos.x <= m_route[nextDestId].x + speed && pos.y >= m_route[nextDestId].y - speed && pos.y <= m_route[nextDestId].y + speed)
 				{
-					//if at last dest in route
-					e->SetNextDestId(-((int)m_route.size()));
+					if (nextDestId == m_route.size() - 1)
+					{
+						//if at last dest in route
+						e->SetNextDestId(-((int)m_route.size()));
+					}
+					e->SetNextDestId(1);
+					e->SetNextDest(m_route[e->GetNextDestId()]);
 				}
-				e->SetNextDestId(1);
-				e->SetNextDest(m_route[e->GetNextDestId()]);
+				e->MoveToDest(m_route[e->GetNextDestId()]);
 			}
-			e->MoveToDest(m_route[e->GetNextDestId()]);
+			else if (e->GetType() == EType::eKamikaze)
+			{
+				e->SetNextDest(playerPos);
+			}
 		}
 	}
 }

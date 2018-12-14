@@ -115,7 +115,8 @@ void PlayerEntity::Update(Visualisation &viz)
 	SetPosition(pos);
 }
 
-void PlayerEntity::Collision(int damage, string collider)
+int PlayerEntity::Collision(int damage, string collider)
 {
 	m_health -= damage;
+	return 0;
 }

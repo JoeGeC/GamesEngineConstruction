@@ -11,7 +11,7 @@ public:
 	void SpawnEnemy(int i);
 	void PopulateRoute(Vector2 point);
 	void PopulateEnemies(EnemyEntity* enemy);
-	void FollowRoute();
+	void FollowRoute(Vector2 playerPos);
 
 	int GetNextEnemy() const { return m_nextEnemy; }
 

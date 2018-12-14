@@ -34,17 +34,22 @@ private:
 	int m_screenWidth{ 800 };
 	int m_screenHeight{ 1000 };
 	bool m_paused{ false };
+	int m_score{ 0 };
+	bool m_gameOver{ false };
+
+	void FirePlayerBullet();
+	void FireEnemyBullet();
+	void Collision();
+	void Explosion(Vector2 pos);
+	void CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<EnemyEntity*> *enemyVector, EType type, int health, float speed, float fireRate, int score);
+	void RenderUI();
+	void EndGame();
+	void WinGame();
 
 public:
 	World();
 	~World();
 
 	void Run();
-	void FirePlayerBullet();
-	void FireEnemyBullet();
-	void Collision();
-	void Explosion(Vector2 pos);
-	void CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<EnemyEntity*> *enemyVector, float speed, float fireRate);
-	void RenderUI();
 };
 

@@ -12,7 +12,7 @@ public:
 	~AI();
 	void SpawnEnemy();
 	void CreateWave(Vector2 startPoint, std::vector<EnemyEntity*> enemies, std::vector<Vector2> route);
-	void Update();
+	void Update(Vector2 playerPos);
 
 private:
 	int m_nextWave{ 0 };
