@@ -23,5 +23,7 @@ public:
 	bool IsClicked() const { return m_clicked; }
 	std::string GetSpriteName() const { return m_spriteName; }
 	DWORD GetClickTime() const { return m_lastClickTime; }
+
+	void SetClicked(bool clicked) { m_clicked = clicked; }
 };
 

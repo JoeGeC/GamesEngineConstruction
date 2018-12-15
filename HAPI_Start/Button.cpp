@@ -30,6 +30,8 @@ void Button::Update(Visualisation &viz)
 			m_lastClickTime = time;
 		}
 	}
+
+	Render(viz);
 }
 	
 

@@ -15,6 +15,8 @@ public:
 
 	int GetNextEnemy() const { return m_nextEnemy; }
 
+	void SetNextEnemy(int nextEnemy) { m_nextEnemy = nextEnemy; }
+
 private:
 	Vector2 m_startPoint;
 	vector<Vector2> m_route;

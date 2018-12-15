@@ -3,7 +3,7 @@
 #include "Rectangle.h"
 
 
-Entity::Entity(std::string spriteName, int noOfFrames, float speed) : m_spriteName(spriteName), m_noOfFrames(noOfFrames), m_speed(speed)
+Entity::Entity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed) : m_spriteName(spriteName), m_noOfFrames(noOfFrames), m_startPos(startPos), m_position(startPos), m_speed(speed)
 {
 }
 
@@ -56,4 +56,13 @@ void Entity::Animate()
 	}
 	if (m_frameNo > m_noOfFrames - 1)
 		m_frameNo = 0;
+}
+
+void Entity::Reset()
+{
+	m_alive = false;
+	m_exploded = false;
+	m_frameNo = 0;
+	m_currentHealth = m_maxHealth;
+	m_position = m_startPos;
 }

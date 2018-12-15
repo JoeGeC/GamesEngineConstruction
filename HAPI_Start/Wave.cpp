@@ -24,6 +24,7 @@ void Wave::FollowRoute(Vector2 playerPos)
 {
 	for (auto e : m_enemies)
 	{
+		e->SetNextDest(m_route[e->GetNextDestId()]);
 		if (e->IsAlive())
 		{
 			if (e->GetType() == EType::eShooter)
@@ -37,12 +38,12 @@ void Wave::FollowRoute(Vector2 playerPos)
 					if (nextDestId == m_route.size() - 1)
 					{
 						//if at last dest in route
-						e->SetNextDestId(-((int)m_route.size()));
+						e->IncrementNextDestId(-((int)m_route.size()));
 					}
-					e->SetNextDestId(1);
+					e->IncrementNextDestId(1);
 					e->SetNextDest(m_route[e->GetNextDestId()]);
 				}
-				e->MoveToDest(m_route[e->GetNextDestId()]);
+				e->MoveToDest(m_route[nextDestId]);
 			}
 			else if (e->GetType() == EType::eKamikaze)
 			{

@@ -1,7 +1,7 @@
 #include "ExplosionEntity.h"
 #include "Visualisation.h"
 
-ExplosionEntity::ExplosionEntity(std::string spriteName, int noOfFrames, float speed) : Entity(spriteName, noOfFrames, speed)
+ExplosionEntity::ExplosionEntity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed) : Entity(spriteName, noOfFrames, startPos, speed)
 {
 }
 

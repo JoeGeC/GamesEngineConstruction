@@ -85,7 +85,7 @@ void Visualisation::ClearToColour(HAPI_TColour colour)
 
 int Visualisation::GetScreenHeight() const
 {
-	return m_screenRect.Width();
+	return m_screenRect.Height();
 }
 
 int Visualisation::GetScreenWidth() const

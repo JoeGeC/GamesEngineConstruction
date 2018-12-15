@@ -10,7 +10,7 @@ enum class EType
 class EnemyEntity : public Entity
 {
 public:
-	EnemyEntity(std::string spriteName, int noOfFrames, float speed, int score, int health, EType type);
+	EnemyEntity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed, int score, int health, EType type);
 	~EnemyEntity();
 
 	void Update(Visualisation &viz) override final;
@@ -24,7 +24,8 @@ public:
 	int GetScore() const { return m_score; }
 	EType GetType() const { return m_type; }
 	
-	void SetNextDestId(int i) { m_nextDestId += i; }
+	void SetNextDestId(int i) { m_nextDestId = i; }
+	void IncrementNextDestId(int i) { m_nextDestId += i; }
 	void SetNextDest(Vector2 nextDest) { m_nextDest = nextDest; }
 	void SetTimeSinceLastBulletFired(DWORD time) { m_timeSinceLastBulletFired = time; }
 	void SetFireRate(float fireRate) { m_fireRate = fireRate; }

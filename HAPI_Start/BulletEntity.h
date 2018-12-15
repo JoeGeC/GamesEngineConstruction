@@ -3,7 +3,7 @@
 class BulletEntity : public Entity
 {
 public:
-	BulletEntity(std::string spriteName, int noOfFrames, float speed);
+	BulletEntity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed);
 	~BulletEntity();
 
 	void Update(Visualisation &viz) override final;

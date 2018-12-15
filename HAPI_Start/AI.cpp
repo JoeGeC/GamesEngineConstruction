@@ -19,7 +19,7 @@ void AI::Update(Vector2 playerPos)
 	
 	DWORD time = HAPI.GetTime();
 
-	if (time - m_timeSinceLastWave >= 15000)
+	if (time - m_timeSinceLastWave >= 20000)
 	{
 		m_nextWave++;
 		m_timeSinceLastWave = time;

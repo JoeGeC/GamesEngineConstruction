@@ -1,10 +1,11 @@
 #include "PlayerEntity.h"
 #include <HAPI_lib.h>
 #include <HAPI_InputCodes.h>
+#include "Visualisation.h"
 
 using namespace HAPISPACE;
 
-PlayerEntity::PlayerEntity(std::string spriteName, int noOfFrames, float speed) : Entity(spriteName, noOfFrames, speed)
+PlayerEntity::PlayerEntity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed) : Entity(spriteName, noOfFrames, startPos, speed)
 {
 }
 
@@ -16,7 +17,7 @@ void PlayerEntity::Update(Visualisation &viz)
 {
 	Vector2 pos{ GetPosition() };
 
-	if (m_health <= 0)
+	if (m_currentHealth <= 0)
 		m_alive = false;
 
 	const HAPI_TKeyboardData &keyData = HAPI.GetKeyboardData();
@@ -111,12 +112,25 @@ void PlayerEntity::Update(Visualisation &viz)
 		else if (thumbY < -HK_GAMEPAD_LEFT_THUMB_DEADZONE || contData.digitalButtons[HK_DIGITAL_DPAD_DOWN])
 			pos.y += m_speed;
 	}
+	
+	int screenWidth = viz.GetScreenWidth();
+	int screenHeight = viz.GetScreenHeight();
+	int textureWidth = viz.GetSpriteCollection().at("player")->GetTextureWidth() / m_noOfFrames;
+	int textureHeight = viz.GetSpriteCollection().at("player")->GetTextureHeight();
+	if (pos.x < 0)
+		pos.x = 0;
+	else if (pos.x + textureWidth > screenWidth)
+		pos.x = screenWidth - textureWidth;
+	if (pos.y < 0)
+		pos.y = 0;
+	else if (pos.y + textureHeight > screenHeight)
+		pos.y = screenHeight - textureHeight;
 
 	SetPosition(pos);
 }
 
 int PlayerEntity::Collision(int damage, string collider)
 {
-	m_health -= damage;
+	m_currentHealth -= damage;
 	return 0;
 }

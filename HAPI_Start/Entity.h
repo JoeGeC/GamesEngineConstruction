@@ -26,6 +26,7 @@ class Visualisation;
 class Entity
 {
 private:
+	Vector2 m_startPos;
 	Vector2 m_position;
 	Vector2 m_oldPosition;
 
@@ -39,10 +40,11 @@ protected:
 	int m_frameNo{ 0 };
 	int m_noOfFrames{ 0 };
 	DWORD m_lastFrameUpdateTime{ 0 };
-	int m_health{ 100 };
+	int m_currentHealth{ 100 };
+	int m_maxHealth{ 100 };
 
 public:
-	Entity(std::string spriteName, int noOfFrames, float speed);
+	Entity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed);
 	virtual ~Entity();
 	void PreUpdate(Visualisation &viz);
 	virtual void Update(Visualisation &viz) = 0;
@@ -51,6 +53,7 @@ public:
 	virtual int Collision(int damage, string collider) { return 0; };
 	void MoveToDest(Vector2 dest);
 	void Animate();
+	void Reset();
 
 	void Render(Visualisation &viz, float s);
 
@@ -65,6 +68,6 @@ public:
 	Vector2 GetPosition() const { return m_position; }
 	Rectangle GetRect() const { return m_entityRect; }
 	float GetSpeed() const { return m_speed; }
-	int GetHealth() const { return m_health; }
+	int GetCurrentHealth() const { return m_currentHealth; }
 };
 

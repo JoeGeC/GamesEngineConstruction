@@ -4,7 +4,7 @@
 class BackgroundEntity : public Entity
 {
 public:
-	BackgroundEntity(std::string spriteName, int noOfFrames, float speed);
+	BackgroundEntity(std::string spriteName, int noOfFrames, Vector2 startPos, float speed);
 	~BackgroundEntity();
 
 	void Update(Visualisation &viz) override final;

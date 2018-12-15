@@ -26,6 +26,8 @@ private:
 	std::vector<EnemyEntity*> m_enemyVector;
 	std::vector<Button*> m_buttonVector;
 	AI m_AI;
+	Button *m_pauseButton = new Button("pauseButton", Vector2(1, 1));
+	Button *m_retryButton = new Button("retryButton", Vector2(350, 500));
 
 	bool LoadLevel();
 	void Update();
@@ -36,6 +38,7 @@ private:
 	bool m_paused{ false };
 	int m_score{ 0 };
 	bool m_gameOver{ false };
+	bool m_reset{ false };
 
 	void FirePlayerBullet();
 	void FireEnemyBullet();
@@ -45,6 +48,7 @@ private:
 	void RenderUI();
 	void EndGame();
 	void WinGame();
+	void Reset();
 
 public:
 	World();

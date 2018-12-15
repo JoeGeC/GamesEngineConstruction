@@ -7,13 +7,7 @@
 #include "ExplosionEntity.h"
 #include "Sound.h"
 #include "AI.h"
-
-
 #include <cassert>
-
-//TODO: MENU
-//TODO: LEVELS
-//TODO: RESET
 
 World::World()
 {
@@ -27,6 +21,8 @@ World::~World()
 	for (auto p : m_entityVector)
 		delete p;
 	for (auto p : m_soundVector)
+		delete p;
+	for (auto p : m_buttonVector)
 		delete p;
 }
 
@@ -47,29 +43,36 @@ bool World::LoadLevel()
 		return false;
 	if (!m_viz->CreateSprite("pauseButton", "Data\\sprites\\pauseButton.png", true, 1))
 		return false;
+	if (!m_viz->CreateSprite("retryButton", "Data\\sprites\\retryButton.png", true, 1))
+		return false;
+	if (!m_viz->CreateSprite("boss", "Data\\sprites\\boss.png", true, 1))
+		return false;
 
-	BackgroundEntity *background1 = new BackgroundEntity("background", 1, 5);
+	BackgroundEntity *background1 = new BackgroundEntity("background", 1, Vector2(0, 0), 5);
 	m_entityVector.push_back(background1);
-	background1->SetPosition(Vector2(0, 0));
 
-	BackgroundEntity *background2 = new BackgroundEntity("background", 1, 5);
+	BackgroundEntity *background2 = new BackgroundEntity("background", 1, Vector2(0, -1000), 5);
 	m_entityVector.push_back(background2);
-	background2->SetPosition(Vector2(0, -1000));
-	
-	PlayerEntity *player = new PlayerEntity("player", 3, 15);
+		
+	PlayerEntity *player = new PlayerEntity("player", 3, Vector2(500, 700), 15);
 	m_entityVector.push_back(player);
-	player->SetPosition(Vector2(500, 700));
 
 	//enemies
 	std::vector<EnemyEntity*> enemyVector1;
 	std::vector<EnemyEntity*> enemyVector2;
-	CreateEnemy(10, "enemy", &enemyVector1, EType::eKamikaze, 20, 30, 0, 20);
-	CreateEnemy(10, "enemy1", &enemyVector2, EType::eShooter, 30, 3, 1000, 30);
+	std::vector<EnemyEntity*> enemyVector3;
+	std::vector<EnemyEntity*> bossVector;
+	CreateEnemy(5, "enemy", &enemyVector1, EType::eShooter, 20, 5, 1000, 20);
+	CreateEnemy(5, "enemy1", &enemyVector1, EType::eShooter, 40, 3, 1000, 35);
+	CreateEnemy(10, "enemy1", &enemyVector2, EType::eShooter, 40, 3, 750, 35);
+	CreateEnemy(10, "enemy", &enemyVector3, EType::eKamikaze, 20, 30, 0, 25);
+	CreateEnemy(10, "enemy1", &enemyVector3, EType::eShooter, 40, 5, 500, 45);
+	CreateEnemy(1, "boss", &bossVector, EType::eShooter, 200, 8, 300, 150);
 
 	// bullets
 	for (int i = 0; i < 1000; i++)
 	{
-		BulletEntity *bullet = new BulletEntity("bullet", 1, 20);
+		BulletEntity *bullet = new BulletEntity("bullet", 1, Vector2(0, 0), 20);
 		bullet->SetAlive(false);
 		m_entityVector.push_back(bullet);
 		m_bulletVector.push_back(bullet);
@@ -78,7 +81,7 @@ bool World::LoadLevel()
 	//explosions
 	for (int i = 0; i < 20; i++)
 	{
-		ExplosionEntity *explosion = new ExplosionEntity("explosion", 12, 0);
+		ExplosionEntity *explosion = new ExplosionEntity("explosion", 12, Vector2(0, 0), 0);
 		explosion->SetAlive(false);
 		m_entityVector.push_back(explosion);
 		m_explosionVector.push_back(explosion);
@@ -99,12 +102,15 @@ bool World::LoadLevel()
 	music->PlayStreamed();
 
 	//manage waves
-	m_AI.CreateWave(Vector2(-100, -100), enemyVector1, vector<Vector2>{Vector2(800, 100), Vector2(0, 300), Vector2(400, 500)});
-	m_AI.CreateWave(Vector2(850, -50), enemyVector2, vector<Vector2>{Vector2(0, 100), Vector2(800, 300), Vector2(400, 500)});
+	m_AI.CreateWave(Vector2(-100, 100), enemyVector1, vector<Vector2>{Vector2(850, 100), Vector2(-50, 300), Vector2(850, 500)});
+	m_AI.CreateWave(Vector2(850, 250), enemyVector2, vector<Vector2>{Vector2(-50, 100), Vector2(850, 300), Vector2(-50, 500)});
+	m_AI.CreateWave(Vector2(400, -50), enemyVector3, vector<Vector2>{Vector2(50, 200), Vector2(750, 400), Vector2(50, 400)});
+	m_AI.CreateWave(Vector2(-100, 100), bossVector, vector<Vector2>{Vector2(700, 100), Vector2(0, 100)});
+
 
 	//UI
-	Button *pauseButton = new Button("pauseButton", Vector2(1, 1));
-	m_buttonVector.push_back(pauseButton);
+	m_buttonVector.push_back(m_pauseButton);
+	m_buttonVector.push_back(m_retryButton);
 
 	return true;
 }
@@ -178,7 +184,6 @@ void World::Run()
 		return;
 
 	Update();
-
 }
 
 void World::FirePlayerBullet()
@@ -290,7 +295,7 @@ void World::CreateEnemy(int noOfEnemies, std::string enemyName, std::vector<Enem
 {
 	for (int i = 0; i < noOfEnemies; i++)
 	{
-		EnemyEntity *enemy = new EnemyEntity(enemyName, 4, speed, score, health, type);
+		EnemyEntity *enemy = new EnemyEntity(enemyName, 4, Vector2(-1000, -1000), speed, score, health, type);
 		enemy->SetAlive(false);
 		enemy->SetExploded(true);
 		enemy->SetFireRate(fireRate);
@@ -309,25 +314,20 @@ void World::RenderUI()
 		{
 			if (p->GetSpriteName() == "player")
 			{
-				playerHealth = p->GetHealth();
+				playerHealth = p->GetCurrentHealth();
 				break;
 			}
 		}
 
-		for (auto& b : m_buttonVector)
+		m_pauseButton->Update(*m_viz);
+		if (m_pauseButton->IsClicked())
 		{
-			b->Update(*m_viz);
-			b->Render(*m_viz);
-			if (b->GetSpriteName() == "pauseButton" && b->IsClicked())
-			{
-				m_paused = true;
-				HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "PAUSED", 60, eBold);
-			}
-			else
-				m_paused = false;
+			m_paused = true;
+			HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "PAUSED", 60, eBold);
 		}
+		else
+			m_paused = false;
 
-		HAPI.RenderText(300, 50, HAPI_TColour::WHITE, "LEVEL 1", 30, eBold);
 		HAPI.RenderText(10, m_screenHeight - 50, HAPI_TColour::WHITE, "Health: " + std::to_string(playerHealth), 30, eBold);
 		HAPI.RenderText(m_screenWidth / 2 - 120, 10, HAPI_TColour::WHITE, "Score: " + std::to_string(m_score), 30, eBold);
 	}
@@ -341,20 +341,63 @@ void World::EndGame()
 		{
 			m_gameOver = true;
 			HAPI.RenderText(m_screenWidth / 2 - 100, m_screenHeight / 2 - 100, HAPI_TColour::WHITE, "GAME OVER", 30, eBold);
-			HAPI.RenderText(m_screenWidth / 2 - 150, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
+			HAPI.RenderText(m_screenWidth / 2 - 100, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
+
+			m_retryButton->Update(*m_viz);
+			if (m_retryButton->IsClicked())
+			{
+				Reset();
+				m_retryButton->SetClicked(false);
+			}
+
 		}
 	}
 }
 
 void World::WinGame()
 {
-	for (const auto e : m_enemyVector)
+	if (m_AI.GetNextWave() >= m_AI.GetSizeOfWaves())
 	{
-		if (e->IsAlive())
+		for (const auto e : m_enemyVector)
 		{
-			return;
+			if (e->IsAlive())
+			{
+				return;
+			}
 		}
+
+		HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 100, HAPI_TColour::WHITE, "CONGRATULATIONS", 30, eBold);
+		HAPI.RenderText(m_screenWidth / 2 - 120, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
+
+		m_retryButton->Update(*m_viz);
+		if (m_retryButton->IsClicked())
+		{
+			Reset();
+			m_retryButton->SetClicked(false);
+		}
+			
 	}
-	HAPI.RenderText(m_screenWidth / 2 - 100, m_screenHeight / 2 - 100, HAPI_TColour::WHITE, "CONGRATULATIONS", 30, eBold);
-	HAPI.RenderText(m_screenWidth / 2 - 150, m_screenHeight / 2 - 50, HAPI_TColour::WHITE, "Final Score: " + to_string(m_score), 30, eBold);
+}
+
+void World::Reset()
+{
+	for (auto& p : m_entityVector)
+	{
+		p->Reset();
+		if (p->GetSpriteName() == "player" || p->GetSpriteName() == "background")
+			p->SetAlive(true);
+	}
+	for (auto& p : m_enemyVector)
+	{
+		p->SetExploded(true);
+		p->SetNextDestId(0);
+	}
+	for (auto& p : m_AI.GetWaves())
+	{
+		p->SetNextEnemy(0);
+	}
+	m_AI.SetTimeSinceLastWave(HAPI.GetTime());
+	m_AI.SetNextWave(0);
+	m_score = 0;
+	m_gameOver = false;
 }
